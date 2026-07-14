@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VENTALUX | Historis Data</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<aside class="sidebar">
+
+<div class="sidebar-header">
+
+<img src="img/logo.png">
+
+<h2>VENTALUX</h2>
+
+<p>Smart Monitoring System</p>
+
+</div>
+
+<nav>
+
+<a href="dashboard.html">
+
+<i class="fa-solid fa-house"></i>
+
+Dashboard
+
+</a>
+
+<a href="monitoring.html">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Monitoring
+
+</a>
+
+<a href="kontrol.html">
+
+<i class="fa-solid fa-lightbulb"></i>
+
+    Kontrol
+
+</a>
+
+<a href="historis.html" class="active">
+
+<i class="fa-solid fa-table"></i>
+
+Historis Data
+
+</a>
+
+<a href="login.html">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</a>
+
+</nav>
+
+</aside>
+
+<main class="content">
+
+<div class="topbar">
+
+<div>
+
+<h1>Historis Data</h1>
+
+<p>Riwayat hasil monitoring sistem VENTALUX.</p>
+
+</div>
+
+<div class="online">
+
+🟢 Database Aktif
+
+</div>
+
+</div>
+
+<div class="chart-section">
+
+<div class="chart-header">
+
+<h2>Data Monitoring</h2>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;">
+
+<input
+type="date"
+id="startDate">
+
+<input
+type="date"
+id="endDate">
+
+<input
+type="text"
+id="searchData"
+placeholder="Cari data...">
+
+<button class="btn-green">
+
+<i class="fa-solid fa-file-excel"></i>
+
+Excel
+
+</button>
+
+<button class="btn-red">
+
+<i class="fa-solid fa-file-pdf"></i>
+
+PDF
+
+</button>
+
+</div>
+
+</div>
+
+<table class="history-table">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+
+<th>Jam</th>
+
+<th>RPM</th>
+
+<th>Suhu</th>
+
+<th>Angin</th>
+
+<th>Tegangan</th>
+
+<th>Arus</th>
+
+<th>Daya</th>
+
+<th>Baterai</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>1</td>
+
+<td>10:00</td>
+
+<td>980</td>
+
+<td>28°C</td>
+
+<td>6.8</td>
+
+<td>12.4V</td>
+
+<td>2.8A</td>
+
+<td>36W</td>
+
+<td>87%</td>
+
+</tr>
+
+<tr>
+
+<td>2</td>
+
+<td>10:05</td>
+
+<td>984</td>
+
+<td>28°C</td>
+
+<td>6.9</td>
+
+<td>12.5V</td>
+
+<td>2.9A</td>
+
+<td>37W</td>
+
+<td>86%</td>
+
+</tr>
+
+<tr>
+
+<td>3</td>
+
+<td>10:10</td>
+
+<td>990</td>
+
+<td>29°C</td>
+
+<td>7.0</td>
+
+<td>12.5V</td>
+
+<td>3.0A</td>
+
+<td>38W</td>
+
+<td>86%</td>
+
+</tr>
+<tr>
+
+<td>4</td>
+
+<td>10:15</td>
+
+<td>995</td>
+
+<td>29°C</td>
+
+<td>7.1</td>
+
+<td>12.6V</td>
+
+<td>3.0A</td>
+
+<td>39W</td>
+
+<td>85%</td>
+
+</tr>
+
+<tr>
+
+<td>5</td>
+
+<td>10:20</td>
+
+<td>1002</td>
+
+<td>30°C</td>
+
+<td>7.3</td>
+
+<td>12.7V</td>
+
+<td>3.1A</td>
+
+<td>40W</td>
+
+<td>84%</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="status-grid">
+
+<div class="status-card">
+
+<h4>Total Data</h4>
+
+<p>5 Record</p>
+
+</div>
+
+<div class="status-card">
+
+<h4>Export</h4>
+
+<p class="online-text">
+
+Siap Digunakan
+
+</p>
+
+</div>
+
+<div class="status-card">
+
+<h4>Database</h4>
+
+<p class="online-text">
+
+🟢 Connected
+
+</p>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+</body>
+
+</html>

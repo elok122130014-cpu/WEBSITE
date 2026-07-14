@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VENTALUX | Dashboard</title>
+
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+<div class="sidebar-header">
+
+<img src="img/logo.png" alt="Logo">
+
+<h2>VENTALUX</h2>
+
+<p>Smart Monitoring System</p>
+
+</div>
+
+<nav>
+
+<a href="dashboard.html" class="active">
+
+<i class="fa-solid fa-house"></i>
+
+Dashboard
+
+</a>
+
+<a href="monitoring.html">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Monitoring
+
+</a>
+
+<a href="kontrol.html">
+
+<i class="fa-solid fa-lightbulb"></i>
+
+    Kontrol
+
+</a>
+
+<a href="historis.html">
+
+<i class="fa-solid fa-table"></i>
+
+Historis Data
+
+</a>
+
+<a href="login.html">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</a>
+
+</nav>
+
+</aside>
+
+<!-- ================= CONTENT ================= -->
+
+<main class="content">
+
+<div class="topbar">
+
+<div>
+
+<h1>Dashboard Monitoring</h1>
+
+<p>Ringkasan kondisi sistem Turbin Ventilator secara realtime.</p>
+
+</div>
+
+<div class="online">
+
+🟢 Online
+
+</div>
+
+</div>
+
+<!-- ================= CARD ================= -->
+
+<div class="summary">
+
+<div class="card">
+
+<i class="fa-solid fa-bolt"></i>
+
+<h4>Daya Generator</h4>
+
+<h2 id="power">36 W</h2>
+
+<span>Realtime</span>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-rotate"></i>
+
+<h4>RPM Turbin</h4>
+
+<h2 id="rpm">980 RPM</h2>
+
+<span>Realtime</span>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-wind"></i>
+
+<h4>Kecepatan Angin</h4>
+
+<h2 id="wind">6.8 m/s</h2>
+
+<span>Realtime</span>
+
+</div>
+
+<div class="card battery-card">
+
+<i class="fa-solid fa-battery-three-quarters"></i>
+
+<h4>Status Baterai</h4>
+
+<h2 id="battery">87 %</h2>
+
+<div class="battery-bar">
+
+<div id="batteryFill"></div>
+
+</div>
+
+<p id="batteryStatus">
+
+Charging
+
+</p>
+
+</div>
+
+</div>
+<!-- ================= GRAFIK ================= -->
+
+<div class="chart-section">
+
+    <div class="chart-header">
+
+        <h2>Grafik Ringkasan</h2>
+
+        <select id="chartSelect">
+
+            <option value="rpm">RPM Turbin</option>
+
+            <option value="wind">Kecepatan Angin</option>
+
+            <option value="power">Daya Generator</option>
+
+            <option value="battery">Status Baterai</option>
+
+        </select>
+
+    </div>
+
+    <canvas id="monitorChart"></canvas>
+
+</div>
+
+<!-- ================= MENU CEPAT ================= -->
+
+<div class="status-grid">
+
+    <div class="status-card">
+
+        <i class="fa-solid fa-chart-line"
+        style="font-size:45px;color:#0f766e;margin-bottom:15px;"></i>
+
+        <h4>Monitoring Realtime</h4>
+
+        <p>
+
+            Pantau seluruh sensor secara realtime lengkap beserta grafik yang selalu diperbarui.
+
+        </p>
+
+        <br>
+
+        <a href="monitoring.html" class="btn-green">
+
+            Buka Monitoring
+
+        </a>
+
+    </div>
+
+    <div class="status-card">
+
+        <i class="fa-solid fa-table"
+        style="font-size:45px;color:#0f766e;margin-bottom:15px;"></i>
+
+        <h4>Historis Data</h4>
+
+        <p>
+
+            Lihat riwayat data monitoring serta lakukan pencarian dan export data.
+
+        </p>
+
+        <br>
+
+        <a href="historis.html" class="btn-green">
+
+            Lihat Historis
+
+        </a>
+
+    </div>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="js/dashboard.js"></script>
+
+<script type="module" src="js/firebase.js"></script>
+
+</body>
+
+</html>

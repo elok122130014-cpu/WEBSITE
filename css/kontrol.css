@@ -1,0 +1,164 @@
+/* ===========================
+   CONTROL CARD
+=========================== */
+
+.control-card{
+
+    background:#ffffff;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    margin-top:25px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.lamp-icon{
+
+    font-size:90px;
+
+    margin-bottom:20px;
+
+    transition:.4s;
+
+}
+
+#lampStatus{
+
+    font-size:34px;
+
+    margin:20px 0;
+
+    color:#6b7280;
+
+    transition:.3s;
+
+}
+
+.button-group{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    margin-top:35px;
+
+}
+
+.button-group button{
+
+    border:none;
+
+    padding:16px 40px;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+#btnOn{
+
+    background:#22c55e;
+
+    color:white;
+
+}
+
+#btnOff{
+
+    background:#ef4444;
+
+    color:white;
+
+}
+
+#btnOn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 8px 18px rgba(34,197,94,.3);
+
+}
+
+#btnOff:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 8px 18px rgba(239,68,68,.3);
+
+}
+
+/* ===========================
+   STATUS LAMPU
+=========================== */
+
+.lamp-on{
+
+    color:#facc15;
+
+}
+
+.lamp-off{
+
+    color:#9ca3af;
+
+}
+
+.status-on{
+
+    color:#16a34a !important;
+
+}
+
+.status-off{
+
+    color:#ef4444 !important;
+
+}
+/* ==========================
+   MODE
+========================== */
+
+.mode-card{
+
+    margin:30px 0;
+
+}
+
+.mode-card h3{
+
+    margin-bottom:15px;
+
+    color:#0f766e;
+
+}
+
+.mode-card label{
+
+    margin:0 20px;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+}
+
+.mode-card input{
+
+    margin-right:8px;
+
+}

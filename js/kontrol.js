@@ -168,3 +168,86 @@ onValue(modeRef, (snapshot)=>{
     }
 
 });
+//==============================
+// TAMPILKAN JADWAL OTOMATIS
+//==============================
+const scheduleBox = document.getElementById("scheduleBox");
+function updateScheduleBox(){
+
+    if(autoMode.checked){
+
+        scheduleBox.style.display="flex";
+
+    }else{
+
+        scheduleBox.style.display="none";
+
+    }
+
+}
+
+manualMode.addEventListener("change",updateScheduleBox);
+
+autoMode.addEventListener("change",updateScheduleBox);
+
+updateScheduleBox();
+//=========================
+// SIMPAN JADWAL
+//=========================
+
+const btnSave = document.getElementById("saveSchedule");
+
+btnSave.addEventListener("click", () => {
+
+    const on = document.getElementById("onTime").value;
+
+    const off = document.getElementById("offTime").value;
+
+    const onSplit = on.split(":");
+
+    const offSplit = off.split(":");
+
+    set(ref(db, "schedule"), {
+
+        onHour: Number(onSplit[0]),
+
+        onMinute: Number(onSplit[1]),
+
+        offHour: Number(offSplit[0]),
+
+        offMinute: Number(offSplit[1])
+
+    })
+
+    .then(() => {
+
+        alert("✅ Jadwal berhasil disimpan!");
+
+    })
+
+    .catch((error) => {
+
+        alert("❌ Gagal menyimpan jadwal");
+
+        console.log(error);
+
+    });
+
+});
+const scheduleRef = ref(db,"schedule");
+
+onValue(scheduleRef,(snapshot)=>{
+
+    const data = snapshot.val();
+
+    if(!data) return;
+
+    document.getElementById("onTime").value =
+        String(data.onHour).padStart(2,'0') + ":" +
+        String(data.onMinute).padStart(2,'0');
+
+    document.getElementById("offTime").value =
+        String(data.offHour).padStart(2,'0') + ":" +
+        String(data.offMinute).padStart(2,'0');
+
+});

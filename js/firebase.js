@@ -53,14 +53,39 @@ onValue(sensorRef, (snapshot) => {
     document.getElementById("power").textContent =
         data.power + " mW";
 
-    document.getElementById("battery").textContent =
-        data.battery + " %";
+    const battery = document.getElementById("battery");
+const batteryFill = document.getElementById("batteryFill");
+const batteryStatus = document.getElementById("batteryStatus");
 
-    document.getElementById("batteryFill").style.width =
-        data.battery + "%";
+battery.textContent = data.battery + " %";
 
-    document.getElementById("batteryStatus").textContent =
-        data.status;
+batteryFill.style.width = data.battery + "%";
+
+batteryStatus.textContent = data.batteryStatus;
+
+// Warna sesuai kondisi baterai
+switch(data.batteryStatus){
+
+    case "Penuh":
+        batteryFill.style.background = "#22c55e";
+        batteryStatus.style.color = "#22c55e";
+        break;
+
+    case "Normal":
+        batteryFill.style.background = "#3b82f6";
+        batteryStatus.style.color = "#3b82f6";
+        break;
+
+    case "Rendah":
+        batteryFill.style.background = "#f59e0b";
+        batteryStatus.style.color = "#f59e0b";
+        break;
+
+    case "Perlu Pengisian":
+        batteryFill.style.background = "#ef4444";
+        batteryStatus.style.color = "#ef4444";
+        break;
+}
 
     document.getElementById("temperature").textContent =
         data.temperature.toFixed(1) + " °C";

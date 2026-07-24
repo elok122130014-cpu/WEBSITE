@@ -251,3 +251,37 @@ onValue(scheduleRef,(snapshot)=>{
         String(data.offMinute).padStart(2,'0');
 
 });
+//=====================================
+// STATUS BATERAI REALTIME
+//=====================================
+
+onValue(sensorRef, (snapshot) => {
+
+    const data = snapshot.val();
+
+    if (!data) return;
+
+    const status = document.getElementById("batteryStatus");
+
+    status.textContent = data.batteryStatus;
+
+    switch(data.batteryStatus){
+
+        case "Penuh":
+            status.style.color = "#16a34a";
+            break;
+
+        case "Normal":
+            status.style.color = "#22c55e";
+            break;
+
+        case "Rendah":
+            status.style.color = "#f59e0b";
+            break;
+
+        case "Perlu Pengisian":
+            status.style.color = "#ef4444";
+            break;
+    }
+
+});

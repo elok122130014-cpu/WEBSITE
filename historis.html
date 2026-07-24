@@ -14,6 +14,14 @@
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
+<!-- SheetJS -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- jsPDF -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<!-- AutoTable -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 </head>
 
 <body>
@@ -119,7 +127,7 @@ type="text"
 id="searchData"
 placeholder="Cari data...">
 
-<button class="btn-green">
+<button class="btn-green" id="btnExcel">
 
 <i class="fa-solid fa-file-excel"></i>
 
@@ -127,7 +135,7 @@ Excel
 
 </button>
 
-<button class="btn-red">
+<button class="btn-red" id="btnPDF">
 
 <i class="fa-solid fa-file-pdf"></i>
 
@@ -139,144 +147,27 @@ PDF
 
 </div>
 
-<table class="history-table">
+<table class="history-table" id="historyTable">
 
 <thead>
-
 <tr>
 
 <th>No</th>
-
+<th>Tanggal</th>
 <th>Jam</th>
-
 <th>RPM</th>
-
-<th>Suhu</th>
-
 <th>Angin</th>
-
+<th>Suhu</th>
 <th>Tegangan</th>
-
 <th>Arus</th>
-
 <th>Daya</th>
-
 <th>Baterai</th>
 
 </tr>
 
 </thead>
 
-<tbody>
-
-<tr>
-
-<td>1</td>
-
-<td>10:00</td>
-
-<td>980</td>
-
-<td>28°C</td>
-
-<td>6.8</td>
-
-<td>12.4V</td>
-
-<td>2.8A</td>
-
-<td>36W</td>
-
-<td>87%</td>
-
-</tr>
-
-<tr>
-
-<td>2</td>
-
-<td>10:05</td>
-
-<td>984</td>
-
-<td>28°C</td>
-
-<td>6.9</td>
-
-<td>12.5V</td>
-
-<td>2.9A</td>
-
-<td>37W</td>
-
-<td>86%</td>
-
-</tr>
-
-<tr>
-
-<td>3</td>
-
-<td>10:10</td>
-
-<td>990</td>
-
-<td>29°C</td>
-
-<td>7.0</td>
-
-<td>12.5V</td>
-
-<td>3.0A</td>
-
-<td>38W</td>
-
-<td>86%</td>
-
-</tr>
-<tr>
-
-<td>4</td>
-
-<td>10:15</td>
-
-<td>995</td>
-
-<td>29°C</td>
-
-<td>7.1</td>
-
-<td>12.6V</td>
-
-<td>3.0A</td>
-
-<td>39W</td>
-
-<td>85%</td>
-
-</tr>
-
-<tr>
-
-<td>5</td>
-
-<td>10:20</td>
-
-<td>1002</td>
-
-<td>30°C</td>
-
-<td>7.3</td>
-
-<td>12.7V</td>
-
-<td>3.1A</td>
-
-<td>40W</td>
-
-<td>84%</td>
-
-</tr>
+<tbody id="historyBody">
 
 </tbody>
 
@@ -287,10 +178,9 @@ PDF
 <div class="status-grid">
 
 <div class="status-card">
-
 <h4>Total Data</h4>
 
-<p>5 Record</p>
+<p id="totalRecord">0 Record</p>
 
 </div>
 
@@ -323,6 +213,8 @@ Siap Digunakan
 </main>
 
 </div>
+
+<script type="module" src="js/historis.js"></script>
 
 </body>
 

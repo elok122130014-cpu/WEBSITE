@@ -32,6 +32,8 @@ const app = initializeApp(firebaseConfig);
 
 const db = getDatabase(app);
 
+let lastUpdate = 0;
+
 // =========================
 // AMBIL DATA SENSOR
 // =========================
@@ -43,15 +45,23 @@ onValue(sensorRef, (snapshot) => {
     const data = snapshot.val();
 
     if (!data) return;
+    
+   lastUpdate = Number(data.lastUpdate || 0);
 
-    document.getElementById("rpm").textContent =
-        data.rpm + " RPM";
+    const rpm = document.getElementById("rpm");
+if (rpm) {
+    rpm.textContent = data.rpm + " RPM";
+}
 
-    document.getElementById("wind").textContent =
-        data.wind + " m/s";
+    const wind = document.getElementById("wind");
+if (wind) {
+    wind.textContent = data.wind + " m/s";
+}
 
-    document.getElementById("power").textContent =
-        data.power + " mW";
+    const power = document.getElementById("power");
+if (power) {
+    power.textContent = data.power + " mW";
+}
 
     const battery = document.getElementById("battery");
 const batteryFill = document.getElementById("batteryFill");
@@ -86,15 +96,20 @@ switch(data.batteryStatus){
         batteryStatus.style.color = "#ef4444";
         break;
 }
+const temperature = document.getElementById("temperature");
+if (temperature) {
+    temperature.textContent = data.temperature.toFixed(1) + " °C";
+}
 
-    document.getElementById("temperature").textContent =
-        data.temperature.toFixed(1) + " °C";
+const voltage = document.getElementById("voltage");
+if (voltage) {
+    voltage.textContent = data.voltage.toFixed(2) + " V";
+}
 
-    document.getElementById("voltage").textContent =
-    data.voltage.toFixed(2) + " V";
-    
-    document.getElementById("current").textContent =
-        data.current.toFixed(0) + " mA";
+const current = document.getElementById("current");
+if (current) {
+    current.textContent = data.current.toFixed(0) + " mA";
+}
 if(window.addDataFirebase){
 
     window.addDataFirebase(data);

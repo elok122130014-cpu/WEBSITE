@@ -816,3 +816,6 @@ background:#b91c1c;
     background:#e68900;
 
 }
+.current-card{
+    grid-column: span 2;
+}

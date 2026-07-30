@@ -791,3 +791,28 @@ transition:.3s;
 background:#b91c1c;
 
 }
+.btn-reset{
+
+    background:#ff9800;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.btn-reset:hover{
+
+    background:#e68900;
+
+}

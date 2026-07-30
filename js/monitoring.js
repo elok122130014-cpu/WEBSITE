@@ -175,14 +175,11 @@ window.updateMonitoring = function(data){
     document.getElementById("battery").textContent =
     data.battery + " %";
 
-    document.getElementById("status").textContent =
-    data.status;
-
     document.getElementById("batteryFill").style.width =
     data.battery + "%";
 
     document.getElementById("batteryStatus").textContent =
-    data.status;
+    data.batteryStatus;
 
     // ===========================
     // LAST UPDATE

@@ -22,6 +22,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 
 <!-- AutoTable -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -72,6 +75,11 @@ Monitoring
 
 Historis Data
 
+</a>
+
+<a href="memori.html">
+    <i class="fa-solid fa-box-archive"></i>
+    <span>Memori Historis</span>
 </a>
 
 <a href="login.html">
@@ -143,9 +151,33 @@ Reset
 </div>
 
 </div>
+</div>
+
+<!-- GRAFIK TREND HISTORIS -->
+<div class="history-trend-card">
+
+    <div class="history-trend-header">
+
+        <div>
+            <h2>
+                <i class="fa-solid fa-chart-line"></i>
+                Trend Data Historis
+            </h2>
+
+            <p>
+                Perubahan seluruh parameter monitoring berdasarkan waktu.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="history-chart-container">
+        <canvas id="historyChart"></canvas>
+    </div>
+
+</div>
 
 <table class="history-table" id="historyTable">
-
 <thead>
 <tr>
 
@@ -169,8 +201,6 @@ Reset
 </tbody>
 
 </table>
-
-</div>
 
 <div class="status-grid">
 

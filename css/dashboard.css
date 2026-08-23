@@ -175,12 +175,9 @@ CONTENT
 =========================================*/
 
 .content{
-
-margin-left:280px;
-
-padding:35px;
-
-width:calc(100% - 280px);
+    margin-left:280px;
+    padding:35px 35px 80px;
+    width:calc(100% - 280px);
 
 }
 
@@ -818,4 +815,18 @@ background:#b91c1c;
 }
 .current-card{
     grid-column: span 2;
+}
+/* ========================================
+   GRAFIK TREND HISTORIS
+======================================== */
+
+.history-trend-card{
+    margin-top:40px;
+    margin-bottom:30px;
+}
+
+.history-chart-container{
+    position:relative;
+    width:100%;
+    height:520px;
 }

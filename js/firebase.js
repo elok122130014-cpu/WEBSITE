@@ -63,15 +63,21 @@ if (power) {
     power.textContent = data.power + " mW";
 }
 
-    const battery = document.getElementById("battery");
+const battery = document.getElementById("battery");
 const batteryFill = document.getElementById("batteryFill");
 const batteryStatus = document.getElementById("batteryStatus");
 
-battery.textContent = data.battery + " %";
+if (battery) {
+    battery.textContent = data.battery + " %";
+}
 
-batteryFill.style.width = data.battery + "%";
+if (batteryFill) {
+    batteryFill.style.width = data.battery + "%";
+}
 
-batteryStatus.textContent = data.batteryStatus;
+if (batteryStatus) {
+    batteryStatus.textContent = data.batteryStatus;
+}
 
 // Warna sesuai kondisi baterai
 switch(data.batteryStatus){
@@ -123,3 +129,5 @@ if(window.updateMonitoring){
 
 
 });
+
+export { db };

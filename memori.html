@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Memori Historis - VENTALUX</title>
+
+   <link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/historis.css">
+<link rel="stylesheet" href="css/memori.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+    <div class="sidebar-header">
+
+        <img src="img/logo.png" alt="Logo">
+
+        <h2>VENTALUX</h2>
+
+        <p>Smart Monitoring System</p>
+
+    </div>
+
+    <nav>
+
+        <a href="dashboard.html">
+            <i class="fa-solid fa-house"></i>
+            Dashboard
+        </a>
+
+        <a href="monitoring.html">
+            <i class="fa-solid fa-chart-line"></i>
+            Monitoring
+        </a>
+
+        <a href="kontrol.html">
+            <i class="fa-solid fa-lightbulb"></i>
+            Kontrol
+        </a>
+
+        <a href="historis.html">
+            <i class="fa-solid fa-table"></i>
+            Historis Data
+        </a>
+
+        <a href="memori.html" class="active">
+            <i class="fa-solid fa-box-archive"></i>
+            Memori Historis
+        </a>
+
+        <a href="login.html">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </a>
+
+    </nav>
+
+</aside>
+
+
+    <!-- KONTEN -->
+    <main class="content">
+
+        <div class="page-header">
+
+            <div>
+                <h1>Memori Historis</h1>
+                <p>Arsip data hasil monitoring VENTALUX.</p>
+            </div>
+
+            <div class="online">
+                📡 Internet of Things
+            </div>
+
+        </div>
+
+
+        <!-- PENJELASAN -->
+        <div class="memory-info">
+
+            <div class="memory-info-icon">
+                <i class="fa-solid fa-box-archive"></i>
+            </div>
+
+            <div>
+                <h3>Arsip Historis</h3>
+
+                <p>
+                    Data historis yang telah mencapai 720 record akan
+                    disimpan secara otomatis ke dalam memori historis.
+                    Sistem menyediakan maksimal 3 slot penyimpanan.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- 3 SLOT MEMORI -->
+        <div class="memory-grid">
+
+            <!-- MEMORI 1 -->
+            <div class="memory-card" id="memori1">
+
+                <div class="memory-card-header">
+
+                    <div>
+                        <span class="memory-number">01</span>
+                        <h2>Memori Historis 1</h2>
+                    </div>
+
+                    <span class="memory-status empty" id="statusMemori1">
+                        Kosong
+                    </span>
+
+                </div>
+
+                <div class="memory-details">
+
+                    <p>
+                        <i class="fa-solid fa-database"></i>
+                        <span id="totalMemori1">0 Data</span>
+                    </p>
+
+                    <p>
+                        <i class="fa-solid fa-calendar"></i>
+                        <span id="waktuMemori1">Belum ada arsip</span>
+                    </p>
+
+                </div>
+
+                <div class="memory-actions">
+
+                    <button
+                        class="btn-view"
+                        id="lihatMemori1"
+                        disabled>
+                        <i class="fa-solid fa-eye"></i>
+                        Lihat
+                    </button>
+
+                    <button
+                        class="btn-download"
+                        id="downloadMemori1"
+                        disabled>
+                        <i class="fa-solid fa-download"></i>
+                        Download
+                    </button>
+
+                    <button
+                        class="btn-delete-memory"
+                        id="hapusMemori1"
+                        disabled>
+                        <i class="fa-solid fa-trash"></i>
+                        Hapus
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- MEMORI 2 -->
+            <div class="memory-card" id="memori2">
+
+                <div class="memory-card-header">
+
+                    <div>
+                        <span class="memory-number">02</span>
+                        <h2>Memori Historis 2</h2>
+                    </div>
+
+                    <span class="memory-status empty" id="statusMemori2">
+                        Kosong
+                    </span>
+
+                </div>
+
+                <div class="memory-details">
+
+                    <p>
+                        <i class="fa-solid fa-database"></i>
+                        <span id="totalMemori2">0 Data</span>
+                    </p>
+
+                    <p>
+                        <i class="fa-solid fa-calendar"></i>
+                        <span id="waktuMemori2">Belum ada arsip</span>
+                    </p>
+
+                </div>
+
+                <div class="memory-actions">
+
+                    <button
+                        class="btn-view"
+                        id="lihatMemori2"
+                        disabled>
+                        <i class="fa-solid fa-eye"></i>
+                        Lihat
+                    </button>
+
+                    <button
+                        class="btn-download"
+                        id="downloadMemori2"
+                        disabled>
+                        <i class="fa-solid fa-download"></i>
+                        Download
+                    </button>
+
+                    <button
+                        class="btn-delete-memory"
+                        id="hapusMemori2"
+                        disabled>
+                        <i class="fa-solid fa-trash"></i>
+                        Hapus
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- MEMORI 3 -->
+            <div class="memory-card" id="memori3">
+
+                <div class="memory-card-header">
+
+                    <div>
+                        <span class="memory-number">03</span>
+                        <h2>Memori Historis 3</h2>
+                    </div>
+
+                    <span class="memory-status empty" id="statusMemori3">
+                        Kosong
+                    </span>
+
+                </div>
+
+                <div class="memory-details">
+
+                    <p>
+                        <i class="fa-solid fa-database"></i>
+                        <span id="totalMemori3">0 Data</span>
+                    </p>
+
+                    <p>
+                        <i class="fa-solid fa-calendar"></i>
+                        <span id="waktuMemori3">Belum ada arsip</span>
+                    </p>
+
+                </div>
+
+                <div class="memory-actions">
+
+                    <button
+                        class="btn-view"
+                        id="lihatMemori3"
+                        disabled>
+                        <i class="fa-solid fa-eye"></i>
+                        Lihat
+                    </button>
+
+                    <button
+                        class="btn-download"
+                        id="downloadMemori3"
+                        disabled>
+                        <i class="fa-solid fa-download"></i>
+                        Download
+                    </button>
+
+                    <button
+                        class="btn-delete-memory"
+                        id="hapusMemori3"
+                        disabled>
+                        <i class="fa-solid fa-trash"></i>
+                        Hapus
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- AREA DETAIL MEMORI -->
+        <section class="memory-detail-section" id="memoryDetailSection">
+
+            <div class="memory-detail-header">
+
+                <div>
+                    <h2 id="judulDetailMemori">
+                        Detail Memori Historis
+                    </h2>
+
+                    <p id="infoDetailMemori">
+                        Pilih salah satu memori untuk melihat data.
+                    </p>
+                </div>
+
+                <button
+                    class="btn-close-detail"
+                    id="tutupDetail">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <div class="memory-chart-container">
+
+                <canvas id="memoryChart"></canvas>
+
+            </div>
+
+
+            <div class="memory-table-wrapper">
+
+                <table class="history-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Jam</th>
+                            <th>RPM</th>
+                            <th>Angin</th>
+                            <th>Suhu</th>
+                            <th>Tegangan</th>
+                            <th>Arus</th>
+                            <th>Daya</th>
+                            <th>Baterai</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="memoryTableBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script type="module" src="js/memori.js"></script>
+
+</body>
+</html>

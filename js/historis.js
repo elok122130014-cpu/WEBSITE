@@ -1,314 +1,821 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
     getDatabase,
     ref,
     get,
+    set,
     remove
-
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+
+// ========================================
+// FIREBASE
+// ========================================
+
 const firebaseConfig = {
+
     apiKey: "AIzaSyCo1B0mW8h8HcTIfVZcFyAzVdn0EnYh92g",
+
     authDomain: "website0-2291b.firebaseapp.com",
-    databaseURL: "https://website0-2291b-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+    databaseURL:
+        "https://website0-2291b-default-rtdb.asia-southeast1.firebasedatabase.app",
+
     projectId: "website0-2291b",
-    storageBucket: "website0-2291b.firebasestorage.app",
+
+    storageBucket:
+        "website0-2291b.firebasestorage.app",
+
     messagingSenderId: "185379743094",
-    appId: "1:185379743094:web:dbefea90b74b7924900657"
+
+    appId:
+        "1:185379743094:web:dbefea90b74b7924900657"
+
 };
+
+
 const app = initializeApp(firebaseConfig);
+
 const db = getDatabase(app);
 
-const tbody = document.getElementById("historyBody");
-const totalRecord = document.getElementById("totalRecord");
 
-const searchInput = document.getElementById("searchData");
-const filterDate = document.getElementById("filterDate");
+// ========================================
+// ELEMENT HTML
+// ========================================
 
-const btnExcel = document.getElementById("btnExcel");
-const btnPDF = document.getElementById("btnPDF");
+const tbody =
+    document.getElementById("historyBody");
 
-const btnReset=document.getElementById("btnReset");
+const totalRecord =
+    document.getElementById("totalRecord");
+
+
+// ========================================
+// DATA
+// ========================================
 
 let semuaData = [];
 let dataFilter = [];
+let historyChart = null;
 
-async function loadHistory(){
+const MAX_HISTORY = 720;
+// ========================================
+// ARSIP HISTORY KE MEMORI
+// ========================================
 
-    const historyRef = ref(db,"history");
+async function arsipKeMemoriHistoris() {
 
-    const snapshot = await get(historyRef);
+    try {
 
-    semuaData=[];
+        // Ambil data memori yang sudah ada
+        const memoriRef = ref(db, "memoriHistoris");
+        const snapshotMemori = await get(memoriRef);
 
-    if(!snapshot.exists()){
+        const memori = snapshotMemori.exists()
+            ? snapshotMemori.val()
+            : {};
 
-        tampilkanData([]);
 
-        return;
+        // Cari slot memori yang masih kosong
+        let slotKosong = null;
 
-    }
+        for (let i = 1; i <= 3; i++) {
 
-    const history=snapshot.val();
-    
-    Object.keys(history).forEach(tanggal => {
+            if (!memori[`memori${i}`]) {
 
-    // Lewati node yang bukan format tanggal YYYY-MM-DD
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(tanggal)){
-        return;
-    }
+                slotKosong = `memori${i}`;
+                break;
 
-    Object.keys(history[tanggal]).forEach(jam => {
+            }
 
-        semuaData.push({
-            tanggal,
-            jam,
-            ...history[tanggal][jam]
+        }
+
+
+        // Kalau semua slot penuh
+        if (!slotKosong) {
+
+            alert(
+                "Memori Historis sudah penuh. " +
+                "Silakan hapus salah satu memori terlebih dahulu."
+            );
+
+            return false;
+
+        }
+
+
+        // ========================================
+        // URUTKAN DARI DATA TERLAMA
+        // ========================================
+
+        const dataUrutLama = [...semuaData].sort((a, b) => {
+
+            const A = new Date(
+                `${a.tanggal} ${a.jam.replace(/-/g, ":")}`
+            );
+
+            const B = new Date(
+                `${b.tanggal} ${b.jam.replace(/-/g, ":")}`
+            );
+
+            return A - B;
+
         });
 
-    });
 
-});
-    semuaData.sort((a,b)=>{
+        // ========================================
+        // AMBIL TEPAT 720 DATA
+        // ========================================
 
-        const A=new Date(`${a.tanggal} ${a.jam.replace(/-/g,":")}`);
+        const dataArsip =
+            dataUrutLama.slice(0, MAX_HISTORY);
 
-        const B=new Date(`${b.tanggal} ${b.jam.replace(/-/g,":")}`);
 
-        return B-A;
+        // ========================================
+        // SISANYA
+        // ========================================
 
-    });
+        const dataSisa =
+            dataUrutLama.slice(MAX_HISTORY);
 
-    dataFilter=[...semuaData];
 
-    tampilkanData(dataFilter);
+        console.log(
+            "Data masuk memori:",
+            dataArsip.length
+        );
+
+        console.log(
+            "Data tersisa di history:",
+            dataSisa.length
+        );
+
+
+        // ========================================
+        // SIMPAN KE MEMORI
+        // ========================================
+
+        await set(
+            ref(db, `memoriHistoris/${slotKosong}`),
+            {
+                waktuDisimpan:
+                    new Date().toISOString(),
+
+                totalData:
+                    dataArsip.length,
+
+                data:
+                    dataArsip
+            }
+        );
+
+
+        // ========================================
+        // HAPUS HISTORY LAMA
+        // ========================================
+
+        await remove(
+            ref(db, "history")
+        );
+
+
+        // ========================================
+        // KEMBALIKAN DATA SISA
+        // ========================================
+
+        for (const item of dataSisa) {
+
+            await set(
+                ref(
+                    db,
+                    `history/${item.tanggal}/${item.jam}`
+                ),
+                {
+                    rpm:
+                        item.rpm ?? 0,
+
+                    wind:
+                        item.wind ?? 0,
+
+                    temperature:
+                        item.temperature ?? 0,
+
+                    voltage:
+                        item.voltage ?? 0,
+
+                    current:
+                        item.current ?? 0,
+
+                    power:
+                        item.power ?? 0,
+
+                    battery:
+                        item.battery ?? 0,
+
+                    batteryStatus:
+                        item.batteryStatus ?? ""
+                }
+            );
+
+        }
+
+
+        alert(
+            `${dataArsip.length} data berhasil ` +
+            `disimpan ke ${slotKosong}.`
+        );
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            "Gagal menyimpan Memori Historis:",
+            error
+        );
+
+        alert(
+            "Gagal menyimpan data ke Memori Historis."
+        );
+
+        return false;
+
+    }
 
 }
+// ========================================
+// LOAD HISTORY
+// ========================================
+
+async function loadHistory() {
+
+    try {
+
+        const historyRef =
+            ref(db, "history");
+
+        const snapshot =
+            await get(historyRef);
+
+
+        semuaData = [];
+
+
+        // Jika tidak ada data
+        if (!snapshot.exists()) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10">
+                        Tidak ada data.
+                    </td>
+                </tr>
+            `;
+
+            totalRecord.textContent =
+                "0 Record";
+
+            return;
+        }
+
+
+        const history =
+            snapshot.val();
+
+
+        // ========================================
+        // BACA TANGGAL
+        // ========================================
+
+        Object.keys(history).forEach(tanggal => {
+
+
+            // Pastikan hanya membaca
+            // node tanggal
+            if (
+                !/^\d{4}-\d{2}-\d{2}$/.test(tanggal)
+            ) {
+                return;
+            }
+
+
+            // ========================================
+            // BACA JAM
+            // ========================================
+
+            Object.keys(history[tanggal]).forEach(jam => {
+
+
+                const data =
+                    history[tanggal][jam];
+
+
+                semuaData.push({
+
+                    tanggal: tanggal,
+
+                    jam: jam,
+
+                    ...data
+
+                });
+
+            });
+
+        });
+
+
+        // ========================================
+        // URUTKAN DATA
+        // TERBARU DI ATAS
+        // ========================================
+
+        semuaData.sort((a, b) => {
+
+            const A =
+                new Date(
+                    `${a.tanggal} ${a.jam.replace(/-/g, ":")}`
+                );
+
+            const B =
+                new Date(
+                    `${b.tanggal} ${b.jam.replace(/-/g, ":")}`
+                );
+
+            return B - A;
+
+        });
+
+
+        // ========================================
+        // TAMPILKAN
+        // ========================================
+
+        // ========================================
+// CEK BATAS 720 DATA
+// ========================================
+
+if (semuaData.length >= MAX_HISTORY) {
+
+    console.log(
+        "Data sudah mencapai 720 record."
+    );
+
+    const berhasil =
+        await arsipKeMemoriHistoris();
+
+    if (berhasil) {
+
+        // Baca ulang history
+        await loadHistory();
+
+        return;
+
+    }
+
+}
+
+
+// ========================================
+// TAMPILKAN DATA
+// ========================================
+
+tampilkanData(semuaData);
+
+dataFilter = [...semuaData];
+
+updateChart(dataFilter);
+
+console.log(
+    "Data historis berhasil dibaca:",
+    semuaData.length
+);
+
+        console.log(
+            "Data historis berhasil dibaca:",
+            semuaData.length
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Gagal membaca data historis:",
+            error
+        );
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10">
+                    Gagal membaca data historis.
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+
+
+// ========================================
+// TAMPILKAN DATA
+// ========================================
+
+function tampilkanData(data) {
+
+    tbody.innerHTML = "";
+
+
+    if (data.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10">
+                    Tidak ada data.
+                </td>
+            </tr>
+        `;
+
+        totalRecord.textContent =
+            "0 Record";
+
+        return;
+
+    }
+
+
+    data.forEach((item, index) => {
+
+        tbody.innerHTML += `
+
+            <tr>
+
+                <td>
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${item.tanggal ?? "-"}
+                </td>
+
+                <td>
+                    ${
+                        item.jam
+                        ? item.jam.replace(/-/g, ":")
+                        : "-"
+                    }
+                </td>
+
+                <td>
+                    ${item.rpm ?? "-"}
+                </td>
+
+                <td>
+                    ${item.wind ?? "-"} m/s
+                </td>
+
+                <td>
+                    ${
+                        item.temperature != null
+                        ? Number(item.temperature).toFixed(1)
+                        : "-"
+                    } °C
+                </td>
+
+                <td>
+                    ${
+                        item.voltage != null
+                        ? Number(item.voltage).toFixed(2)
+                        : "-"
+                    } V
+                </td>
+
+                <td>
+                    ${
+                        item.current != null
+                        ? Number(item.current).toFixed(0)
+                        : "-"
+                    } mA
+                </td>
+
+                <td>
+                    ${
+                        item.power != null
+                        ? Number(item.power).toFixed(0)
+                        : "-"
+                    } mW
+                </td>
+
+                <td>
+                    ${item.battery ?? "-"}%
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    totalRecord.textContent =
+        `${data.length} Record`;
+
+}
+
+
+// ========================================
+// JALANKAN
+// ========================================
 
 loadHistory();
 
-// Refresh data setiap 5 detik
-setInterval(loadHistory, 5000);
 
-    function tampilkanData(data){
+// ========================================
+// REFRESH SETIAP 2 MENIT
+// ========================================
 
-    tbody.innerHTML="";
+setInterval(
+    loadHistory,
+    120000
+);
+// ========================================
+// GRAFIK HISTORIS
+// ========================================
 
-    if(data.length===0){
+function updateChart(data) {
 
-        tbody.innerHTML=`
-        <tr>
-            <td colspan="10">Tidak ada data.</td>
-        </tr>
-        `;
+    const ctx = document.getElementById("historyChart");
 
-        totalRecord.textContent="0 Record";
-
+    if (!ctx) {
+        console.log("Canvas historyChart tidak ditemukan");
         return;
-
     }
 
-    data.forEach((item,index)=>{
+    // Data grafik dari waktu terlama ke terbaru
+    const dataGrafik = [...data].reverse();
 
-        tbody.innerHTML+=`
-
-        <tr>
-
-            <td>${index+1}</td>
-
-            <td>${item.tanggal ?? "-"}</td>
-
-            <td>${item.jam ? item.jam.replace(/-/g,":") : "-"}</td>
-
-            <td>${item.rpm ?? "-"}</td>
-
-            <td>${item.wind ?? "-"} m/s</td>
-
-            <td>${item.temperature!=null ? Number(item.temperature).toFixed(1) : "-"} °C</td>
-
-            <td>${item.voltage!=null ? Number(item.voltage).toFixed(2) : "-"} V</td>
-
-            <td>${item.current!=null ? Number(item.current).toFixed(0) : "-"} mA</td>
-
-            <td>${item.power!=null ? Number(item.power).toFixed(0) : "-"} mW</td>
-
-            <td>${item.battery ?? "-"}%</td>
-
-        </tr>
-
-        `;
-
+    const labels = dataGrafik.map(item => {
+        return `${item.tanggal} ${item.jam.replace(/-/g, ":")}`;
     });
 
-    totalRecord.textContent=`${data.length} Record`;
 
-}
-searchInput.addEventListener("input", () => {
-
-    const keyword = searchInput.value.toLowerCase();
-
-    const hasil = dataFilter.filter(item => {
-
-        return Object.values(item)
-            .join(" ")
-            .toLowerCase()
-            .includes(keyword);
-
-    });
-
-    tampilkanData(hasil);
-
-});
-function filterTanggal(){
-
-    if(filterDate.value==""){
-
-        dataFilter=[...semuaData];
-
-    }else{
-
-        dataFilter=semuaData.filter(item=>item.tanggal===filterDate.value);
-
+    // Hapus grafik sebelumnya
+    if (historyChart) {
+        historyChart.destroy();
     }
 
-    tampilkanData(dataFilter);
 
-}
+    // Buat grafik baru
+    historyChart = new Chart(ctx, {
 
-filterDate.addEventListener("change",filterTanggal);
-btnExcel.addEventListener("click", () => {
+        type: "line",
 
-    if(dataFilter.length==0){
+        data: {
 
-        alert("Tidak ada data untuk diexport!");
+            labels: labels,
 
-        return;
+            datasets: [
 
-    }
+                {
+                    label: "RPM",
 
-    const excelData = dataFilter.map(item => ({
+                    data: dataGrafik.map(item =>
+                        Number(item.rpm ?? 0)
+                    ),
 
-        "Tanggal": item.tanggal,
+                    borderWidth: 2,
 
-        "Jam": item.jam.replace(/-/g,":"),
+                    tension: 0.3,
 
-        "RPM": item.rpm,
+                    yAxisID: "yRPM"
+                },
 
-        "Kecepatan Angin (m/s)": item.wind,
 
-        "Suhu (°C)": item.temperature,
+                {
+                    label: "Kecepatan Angin (m/s)",
 
-        "Tegangan (V)": item.voltage,
+                    data: dataGrafik.map(item =>
+                        Number(item.wind ?? 0)
+                    ),
 
-        "Arus (mA)": item.current,
+                    borderWidth: 2,
 
-        "Daya (mW)": item.power,
+                    tension: 0.3,
 
-        "Baterai (%)": item.battery
+                    yAxisID: "yAngin"
+                },
 
-    }));
 
-    const ws = XLSX.utils.json_to_sheet(excelData);
+                {
+                    label: "Suhu (°C)",
 
-    const wb = XLSX.utils.book_new();
+                    data: dataGrafik.map(item =>
+                        Number(item.temperature ?? 0)
+                    ),
 
-    XLSX.utils.book_append_sheet(wb, ws, "Historis");
+                    borderWidth: 2,
 
-    XLSX.writeFile(wb, "Historis_VENTALUX.xlsx");
+                    tension: 0.3,
 
-});
-btnPDF.addEventListener("click", () => {
+                    yAxisID: "ySuhu"
+                },
 
-    if(dataFilter.length==0){
 
-        alert("Tidak ada data untuk diexport!");
+                {
+                    label: "Tegangan (V)",
 
-        return;
+                    data: dataGrafik.map(item =>
+                        Number(item.voltage ?? 0)
+                    ),
 
-    }
+                    borderWidth: 2,
 
-    const { jsPDF } = window.jspdf;
+                    tension: 0.3,
 
-    const doc = new jsPDF("landscape");
+                    yAxisID: "yTegangan"
+                },
 
-    doc.setFontSize(16);
 
-    doc.text("Historis Monitoring VENTALUX",14,15);
+                {
+                    label: "Arus (mA)",
 
-    const rows = dataFilter.map(item => [
+                    data: dataGrafik.map(item =>
+                        Number(item.current ?? 0)
+                    ),
 
-        item.tanggal,
+                    borderWidth: 2,
 
-        item.jam.replace(/-/g,":"),
+                    tension: 0.3,
 
-        item.rpm,
+                    yAxisID: "yArus"
+                },
 
-        item.wind,
 
-        item.temperature,
+                {
+                    label: "Daya (mW)",
 
-        item.voltage,
+                    data: dataGrafik.map(item =>
+                        Number(item.power ?? 0)
+                    ),
 
-        item.current,
+                    borderWidth: 2,
 
-        item.power,
+                    tension: 0.3,
 
-        item.battery
+                    yAxisID: "yDaya"
+                },
 
-    ]);
 
-    doc.autoTable({
+                {
+                    label: "Baterai (%)",
 
-        head:[[
-            "Tanggal",
-            "Jam",
-            "RPM",
-            "Angin",
-            "Suhu",
-            "Volt",
-            "Arus",
-            "Daya",
-            "Battery"
-        ]],
+                    data: dataGrafik.map(item =>
+                        Number(item.battery ?? 0)
+                    ),
 
-        body:rows,
+                    borderWidth: 2,
 
-        startY:25,
+                    tension: 0.3,
 
-        theme:"grid",
+                    yAxisID: "yBaterai"
+                }
 
-        styles:{
-            fontSize:8
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+
+            interaction: {
+                mode: "index",
+                intersect: false
+            },
+
+
+            plugins: {
+
+                legend: {
+                    position: "top"
+                },
+
+                tooltip: {
+                    mode: "index",
+                    intersect: false
+                }
+
+            },
+
+
+            scales: {
+
+                x: {
+
+                    title: {
+                        display: true,
+                        text: "Waktu"
+                    },
+
+                    ticks: {
+                        maxTicksLimit: 12
+                    }
+
+                },
+
+
+                yRPM: {
+
+                    type: "linear",
+
+                    position: "left",
+
+                    title: {
+                        display: true,
+                        text: "RPM"
+                    }
+
+                },
+
+
+                yAngin: {
+
+                    type: "linear",
+
+                    display: false,
+
+                    position: "right"
+
+                },
+
+
+                ySuhu: {
+
+                    type: "linear",
+
+                    display: false,
+
+                    position: "right"
+
+                },
+
+
+                yTegangan: {
+
+                    type: "linear",
+
+                    display: false,
+
+                    position: "right"
+
+                },
+
+
+                yArus: {
+
+                    type: "linear",
+
+                    display: false,
+
+                    position: "right"
+
+                },
+
+
+                yDaya: {
+
+                    type: "linear",
+
+                    display: false,
+
+                    position: "right"
+
+                },
+
+
+                yBaterai: {
+
+                    type: "linear",
+
+                    display: false,
+
+                    position: "right",
+
+                    min: 0,
+
+                    max: 100
+
+                }
+
+            }
+
         }
 
     });
 
-    doc.save("Historis_VENTALUX.pdf");
-
-});
-btnReset.addEventListener("click", async () => {
-
-    const yakin = confirm("Yakin ingin menghapus seluruh data historis?");
-
-    if (!yakin) return;
-
-    try {
-
-        await remove(ref(db, "history"));
-
-        tbody.innerHTML = "";
-
-        totalRecord.textContent = "0 Record";
-
-        alert("Data historis berhasil dihapus.");
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert("Gagal menghapus data.");
-
-    }
-
-});
+}

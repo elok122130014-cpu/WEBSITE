@@ -296,6 +296,9 @@ function tampilkanTabelMemori(data) {
 // ========================================
 // TAMPILKAN GRAFIK
 // ========================================
+// ========================================
+// TAMPILKAN GRAFIK MEMORI
+// ========================================
 
 function tampilkanGrafikMemori(data) {
 
@@ -305,23 +308,115 @@ function tampilkanGrafikMemori(data) {
     if (!canvas) return;
 
 
-    // Hapus grafik sebelumnya
-    if (memoryChart) {
-        memoryChart.destroy();
-    }
+    // Parameter yang dipilih
+    const parameterSelect =
+        document.getElementById(
+            "memoryParameterSelect"
+        );
+
+    const parameter =
+        parameterSelect
+            ? parameterSelect.value
+            : "temperature";
 
 
-    const labels = data.map(item => {
+    // ========================================
+    // KONFIGURASI PARAMETER
+    // ========================================
 
-        const tanggal = item.tanggal || "";
+    const parameterConfig = {
+
+        rpm: {
+            label: "RPM",
+            unit: "RPM",
+            key: "rpm"
+        },
+
+        wind: {
+            label: "Kecepatan Angin",
+            unit: "m/s",
+            key: "wind"
+        },
+
+        temperature: {
+            label: "Suhu",
+            unit: "°C",
+            key: "temperature"
+        },
+
+        voltage: {
+            label: "Tegangan",
+            unit: "V",
+            key: "voltage"
+        },
+
+        current: {
+            label: "Arus",
+            unit: "mA",
+            key: "current"
+        },
+
+        power: {
+            label: "Daya",
+            unit: "mW",
+            key: "power"
+        },
+
+        battery: {
+            label: "Baterai",
+            unit: "%",
+            key: "battery"
+        }
+
+    };
+
+
+    const config =
+        parameterConfig[parameter] ||
+        parameterConfig.temperature;
+
+
+    // ========================================
+    // DATA GRAFIK
+    // ========================================
+
+    const dataGrafik = [...data];
+
+    const labels = dataGrafik.map(item => {
+
         const jam = item.jam
             ? item.jam.replace(/-/g, ":")
             : "";
 
-        return `${tanggal} ${jam}`;
+        return `${item.tanggal || ""} ${jam}`;
 
     });
 
+
+    const values = dataGrafik.map(item => {
+
+        return Number(
+            item[config.key] ?? 0
+        );
+
+    });
+
+
+    // ========================================
+    // HAPUS GRAFIK SEBELUMNYA
+    // ========================================
+
+    if (memoryChart) {
+
+        memoryChart.destroy();
+        memoryChart = null;
+
+    }
+
+
+    // ========================================
+    // BUAT GRAFIK
+    // ========================================
 
     memoryChart = new Chart(canvas, {
 
@@ -334,73 +429,22 @@ function tampilkanGrafikMemori(data) {
             datasets: [
 
                 {
-                    label: "RPM",
-                    data: data.map(item =>
-                        Number(item.rpm ?? 0)
-                    ),
-                    borderWidth: 2,
-                    tension: 0.3,
-                    yAxisID: "yRPM"
-                },
 
-                {
-                    label: "Kecepatan Angin (m/s)",
-                    data: data.map(item =>
-                        Number(item.wind ?? 0)
-                    ),
-                    borderWidth: 2,
-                    tension: 0.3,
-                    yAxisID: "yAngin"
-                },
+                    label:
+                        `${config.label} (${config.unit})`,
 
-                {
-                    label: "Suhu (°C)",
-                    data: data.map(item =>
-                        Number(item.temperature ?? 0)
-                    ),
-                    borderWidth: 2,
-                    tension: 0.3,
-                    yAxisID: "ySuhu"
-                },
+                    data: values,
 
-                {
-                    label: "Tegangan (V)",
-                    data: data.map(item =>
-                        Number(item.voltage ?? 0)
-                    ),
                     borderWidth: 2,
-                    tension: 0.3,
-                    yAxisID: "yTegangan"
-                },
 
-                {
-                    label: "Arus (mA)",
-                    data: data.map(item =>
-                        Number(item.current ?? 0)
-                    ),
-                    borderWidth: 2,
                     tension: 0.3,
-                    yAxisID: "yArus"
-                },
 
-                {
-                    label: "Daya (mW)",
-                    data: data.map(item =>
-                        Number(item.power ?? 0)
-                    ),
-                    borderWidth: 2,
-                    tension: 0.3,
-                    yAxisID: "yDaya"
-                },
+                    pointRadius: 2,
 
-                {
-                    label: "Baterai (%)",
-                    data: data.map(item =>
-                        Number(item.battery ?? 0)
-                    ),
-                    borderWidth: 2,
-                    tension: 0.3,
-                    yAxisID: "yBaterai"
+                    pointHoverRadius: 5,
+
+                    fill: false
+
                 }
 
             ]
@@ -411,22 +455,68 @@ function tampilkanGrafikMemori(data) {
         options: {
 
             responsive: true,
+
             maintainAspectRatio: false,
 
+
             interaction: {
+
                 mode: "index",
+
                 intersect: false
+
             },
+
 
             plugins: {
 
                 legend: {
+
+                    display: true,
+
                     position: "top"
+
                 },
 
+
+                title: {
+
+                    display: true,
+
+                    text:
+                        `${config.label} terhadap Waktu`,
+
+                    font: {
+
+                        size: 16,
+
+                        weight: "bold"
+
+                    }
+
+                },
+
+
                 tooltip: {
+
                     mode: "index",
-                    intersect: false
+
+                    intersect: false,
+
+                    callbacks: {
+
+                        label: function(context) {
+
+                            return (
+                                `${config.label}: ` +
+                                `${context.parsed.y} ` +
+                                `${config.unit}`
+                            );
+
+                        }
+
+                    }
+
                 }
 
             },
@@ -435,57 +525,37 @@ function tampilkanGrafikMemori(data) {
             scales: {
 
                 x: {
-                    ticks: {
-                        maxTicksLimit: 12
-                    }
-                },
-
-                yRPM: {
-                    type: "linear",
-                    position: "left",
 
                     title: {
+
                         display: true,
-                        text: "RPM"
+
+                        text: "Waktu"
+
+                    },
+
+                    ticks: {
+
+                        maxTicksLimit: 12
+
                     }
+
                 },
 
-                yAngin: {
-                    type: "linear",
-                    display: false,
-                    position: "right"
-                },
 
-                ySuhu: {
-                    type: "linear",
-                    display: false,
-                    position: "right"
-                },
+                y: {
 
-                yTegangan: {
-                    type: "linear",
-                    display: false,
-                    position: "right"
-                },
+                    title: {
 
-                yArus: {
-                    type: "linear",
-                    display: false,
-                    position: "right"
-                },
+                        display: true,
 
-                yDaya: {
-                    type: "linear",
-                    display: false,
-                    position: "right"
-                },
+                        text:
+                            `${config.label} (${config.unit})`
 
-                yBaterai: {
-                    type: "linear",
-                    display: false,
-                    position: "right",
-                    min: 0,
-                    max: 100
+                    },
+
+                    beginAtZero: false
+
                 }
 
             }
@@ -493,6 +563,29 @@ function tampilkanGrafikMemori(data) {
         }
 
     });
+
+}
+// ========================================
+// GANTI PARAMETER GRAFIK MEMORI
+// ========================================
+
+const memoryParameterSelect =
+    document.getElementById(
+        "memoryParameterSelect"
+    );
+
+if (memoryParameterSelect) {
+
+    memoryParameterSelect.addEventListener(
+        "change",
+        () => {
+
+            tampilkanGrafikMemori(
+                dataMemoriAktif
+            );
+
+        }
+    );
 
 }
 
@@ -507,6 +600,10 @@ function tampilkanGrafikMemori(data) {
 // DOWNLOAD MEMORI - EXCEL + GRAFIK
 // ========================================
 
+// ========================================
+// DOWNLOAD MEMORI - EXCEL + SEMUA GRAFIK
+// ========================================
+
 async function downloadMemori(namaMemori, memori) {
 
     try {
@@ -518,40 +615,14 @@ async function downloadMemori(namaMemori, memori) {
 
         if (data.length === 0) {
 
-            alert("Tidak ada data untuk di-download.");
+            alert("Data memori tidak tersedia.");
             return;
 
         }
 
 
         // ========================================
-        // PASTIKAN GRAFIK SUDAH ADA
-        // ========================================
-
-        if (!memoryChart) {
-
-            alert(
-                "Silakan klik tombol Lihat terlebih dahulu agar grafik dimuat, kemudian klik Download."
-            );
-
-            return;
-
-        }
-
-
-        // ========================================
-        // AMBIL GAMBAR GRAFIK DARI CHART.JS
-        // ========================================
-
-        const imageBase64 =
-            memoryChart.toBase64Image(
-                "image/png",
-                1
-            );
-
-
-        // ========================================
-        // BUAT WORKBOOK EXCEL
+        // BUAT WORKBOOK
         // ========================================
 
         const workbook =
@@ -559,22 +630,20 @@ async function downloadMemori(namaMemori, memori) {
 
 
         workbook.creator = "VENTALUX";
-
         workbook.created = new Date();
 
 
         // ========================================
-        // SHEET 1
-        // DATA MEMORI
+        // SHEET 1 - DATA MONITORING
         // ========================================
 
-        const dataSheet =
+        const sheetData =
             workbook.addWorksheet(
-                namaMemori
+                "Data Monitoring"
             );
 
 
-        dataSheet.columns = [
+        sheetData.columns = [
 
             {
                 header: "No",
@@ -639,141 +708,361 @@ async function downloadMemori(namaMemori, memori) {
         ];
 
 
-        // ========================================
-        // MASUKKAN DATA
-        // ========================================
-
         data.forEach((item, index) => {
 
-            dataSheet.addRow({
+            sheetData.addRow({
 
-                no:
-                    index + 1,
+                no: index + 1,
 
                 tanggal:
-                    item.tanggal ?? "",
+                    item.tanggal || "-",
 
                 jam:
                     item.jam
                         ? item.jam.replace(/-/g, ":")
-                        : "",
+                        : "-",
 
                 rpm:
-                    Number(item.rpm ?? 0),
+                    item.rpm ?? "-",
 
                 wind:
-                    Number(item.wind ?? 0),
+                    item.wind ?? "-",
 
                 temperature:
-                    Number(item.temperature ?? 0),
+                    item.temperature ?? "-",
 
                 voltage:
-                    Number(item.voltage ?? 0),
+                    item.voltage ?? "-",
 
                 current:
-                    Number(item.current ?? 0),
+                    item.current ?? "-",
 
                 power:
-                    Number(item.power ?? 0),
+                    item.power ?? "-",
 
                 battery:
-                    Number(item.battery ?? 0)
+                    item.battery ?? "-"
 
             });
 
         });
 
 
-        // ========================================
-        // FORMAT HEADER
-        // ========================================
-
-        const header =
-            dataSheet.getRow(1);
-
-
-        header.font = {
+        // Format header
+        sheetData.getRow(1).font = {
             bold: true
         };
 
 
-        header.alignment = {
+        sheetData.getRow(1).alignment = {
             horizontal: "center",
             vertical: "middle"
         };
 
 
-        dataSheet.views = [
+        // ========================================
+        // SHEET 2 - GRAFIK
+        // ========================================
+
+        const sheetGrafik =
+            workbook.addWorksheet(
+                "Grafik"
+            );
+
+
+        sheetGrafik.getCell("A1").value =
+            `Grafik ${namaMemori.replace(
+                "memori",
+                "Memori Historis "
+            )}`;
+
+
+        sheetGrafik.getCell("A1").font = {
+            bold: true,
+            size: 16
+        };
+
+
+        // ========================================
+        // PARAMETER GRAFIK
+        // ========================================
+
+        const parameterList = [
+
             {
-                state: "frozen",
-                ySplit: 1
+                key: "rpm",
+                label: "RPM",
+                unit: "RPM"
+            },
+
+            {
+                key: "wind",
+                label: "Kecepatan Angin",
+                unit: "m/s"
+            },
+
+            {
+                key: "temperature",
+                label: "Suhu",
+                unit: "°C"
+            },
+
+            {
+                key: "voltage",
+                label: "Tegangan",
+                unit: "V"
+            },
+
+            {
+                key: "current",
+                label: "Arus",
+                unit: "mA"
+            },
+
+            {
+                key: "power",
+                label: "Daya",
+                unit: "mW"
+            },
+
+            {
+                key: "battery",
+                label: "Baterai",
+                unit: "%"
             }
+
         ];
 
 
         // ========================================
-        // SHEET 2
-        // GRAFIK MEMORI
+        // BUAT CANVAS SEMENTARA
         // ========================================
 
-        const chartSheet =
-            workbook.addWorksheet(
-                `Grafik ${namaMemori}`
-            );
+        const canvas =
+            document.createElement("canvas");
 
+        canvas.width = 1200;
+        canvas.height = 550;
 
-        chartSheet.getCell("A1").value =
-            `Grafik Monitoring ${namaMemori}`;
-
-
-        chartSheet.getCell("A1").font = {
-
-            bold: true,
-
-            size: 18
-
-        };
-
-
-        chartSheet.getCell("A3").value =
-            "Grafik hasil monitoring VENTALUX";
-
-
-        chartSheet.getCell("A3").font = {
-
-            italic: true
-
-        };
+        const ctx =
+            canvas.getContext("2d");
 
 
         // ========================================
-        // TAMBAHKAN GAMBAR GRAFIK
+        // BUAT SETIAP GRAFIK
         // ========================================
 
-        const imageId =
-            workbook.addImage({
+        for (const parameter of parameterList) {
 
-                base64: imageBase64,
+            const labels = data.map(item => {
 
-                extension: "png"
+                const jam = item.jam
+                    ? item.jam.replace(/-/g, ":")
+                    : "";
+
+                return `${item.tanggal || ""} ${jam}`;
 
             });
 
 
-        chartSheet.addImage(
-            imageId,
-            {
-                tl: {
-                    col: 0,
-                    row: 4
-                },
+            const values = data.map(item =>
 
-                ext: {
-                    width: 1200,
-                    height: 600
-                }
+                Number(
+                    item[parameter.key] ?? 0
+                )
+
+            );
+
+
+            // Hapus grafik sebelumnya
+            const existingChart =
+                Chart.getChart(canvas);
+
+            if (existingChart) {
+                existingChart.destroy();
             }
-        );
+
+
+            // Buat grafik
+            const chart =
+                new Chart(ctx, {
+
+                    type: "line",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    `${parameter.label} (${parameter.unit})`,
+
+                                data: values,
+
+                                borderWidth: 2,
+
+                                tension: 0.3,
+
+                                pointRadius: 2,
+
+                                fill: false
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive: false,
+
+                        animation: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: true
+                            },
+
+                            title: {
+
+                                display: true,
+
+                                text:
+                                    `${parameter.label} terhadap Waktu`,
+
+                                font: {
+                                    size: 18
+                                }
+
+                            }
+
+                        },
+
+
+                        scales: {
+
+                            x: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text: "Waktu"
+
+                                },
+
+                                ticks: {
+
+                                    maxTicksLimit: 15
+
+                                }
+
+                            },
+
+
+                            y: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text:
+                                        `${parameter.label} (${parameter.unit})`
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+
+            // ========================================
+            // AMBIL GAMBAR GRAFIK
+            // ========================================
+
+            const imageData =
+                canvas.toDataURL(
+                    "image/png",
+                    1.0
+                );
+
+
+            // Posisi grafik
+            const rowStart =
+                3 +
+                (
+                    parameterList.indexOf(parameter)
+                    * 28
+                );
+
+
+            // Judul grafik
+            sheetGrafik.getCell(
+                `A${rowStart}`
+            ).value =
+                `${parameter.label} terhadap Waktu`;
+
+
+            sheetGrafik.getCell(
+                `A${rowStart}`
+            ).font = {
+
+                bold: true,
+
+                size: 13
+
+            };
+
+
+            // Masukkan gambar ke Excel
+            const imageId =
+                workbook.addImage({
+
+                    base64: imageData,
+
+                    extension: "png"
+
+                });
+
+
+            sheetGrafik.addImage(
+                imageId,
+                {
+
+                    tl: {
+
+                        col: 0,
+
+                        row: rowStart
+
+                    },
+
+                    ext: {
+
+                        width: 900,
+
+                        height: 400
+
+                    }
+
+                }
+            );
+
+
+            // Hapus chart sementara
+            chart.destroy();
+
+        }
 
 
         // ========================================
@@ -806,14 +1095,12 @@ async function downloadMemori(namaMemori, memori) {
 
 
         link.download =
-            `${namaMemori}_VENTALUX.xlsx`;
+            `${namaMemori}_Data_dan_Grafik.xlsx`;
 
 
         document.body.appendChild(link);
 
-
         link.click();
-
 
         document.body.removeChild(link);
 
@@ -821,22 +1108,21 @@ async function downloadMemori(namaMemori, memori) {
         URL.revokeObjectURL(url);
 
 
-        console.log(
-            "Excel berhasil dibuat dengan grafik."
+        alert(
+            "Data dan seluruh grafik berhasil diunduh."
         );
 
 
     } catch (error) {
 
         console.error(
-            "Gagal membuat Excel:",
+            "Gagal mengunduh Memori Historis:",
             error
         );
 
 
         alert(
-            "Gagal membuat file Excel. " +
-            "Cek Console untuk melihat error."
+            "Gagal membuat file Excel."
         );
 
     }

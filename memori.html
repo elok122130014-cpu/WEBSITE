@@ -63,11 +63,10 @@
             Memori Historis
         </a>
 
-        <a href="login.html">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
+        <a href="#" id="logoutButton">
+        <i class="fa-solid fa-right-from-bracket"></i>
+         Logout
         </a>
-
     </nav>
 
 </aside>
@@ -320,13 +319,50 @@
                 </button>
 
             </div>
+<!-- PILIH PARAMETER GRAFIK MEMORI -->
+<div class="memory-parameter-select">
 
+    <label for="memoryParameterSelect">
+        Parameter
+    </label>
 
-            <div class="memory-chart-container">
+    <select id="memoryParameterSelect">
 
-                <canvas id="memoryChart"></canvas>
+        <option value="temperature">
+            Suhu (°C)
+        </option>
 
-            </div>
+        <option value="voltage">
+            Tegangan (V)
+        </option>
+
+        <option value="current">
+            Arus (mA)
+        </option>
+
+        <option value="power">
+            Daya (mW)
+        </option>
+
+        <option value="wind">
+            Kecepatan Angin (m/s)
+        </option>
+
+        <option value="rpm">
+            RPM
+        </option>
+
+        <option value="battery">
+            Baterai (%)
+        </option>
+
+    </select>
+
+</div>
+
+<div class="memory-chart-container">
+    <canvas id="memoryChart"></canvas>
+</div>
 
 
             <div class="memory-table-wrapper">
@@ -366,6 +402,7 @@
 
 
 <script type="module" src="js/memori.js"></script>
-
+<script type="module" src="js/auth-guard.js"></script>
+<script type="module" src="js/logout.js"></script>
 </body>
 </html>

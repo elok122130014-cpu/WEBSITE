@@ -10,7 +10,7 @@
 <title>VENTALUX | Historis Data</title>
 
 <link rel="stylesheet" href="css/dashboard.css">
-
+<link rel="stylesheet" href="css/historis.css">
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
@@ -82,12 +82,9 @@ Historis Data
     <span>Memori Historis</span>
 </a>
 
-<a href="login.html">
-
-<i class="fa-solid fa-right-from-bracket"></i>
-
-Logout
-
+<a href="#" id="logoutButton">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    Logout
 </a>
 
 </nav>
@@ -141,7 +138,11 @@ PDF
 
 </button>
 
-<button class="btn-reset" id="btnReset">
+<button
+    type="button"
+    class="btn-reset"
+    id="btnReset"
+>
 
 <i class="fa-solid fa-trash"></i>
 
@@ -154,6 +155,7 @@ Reset
 </div>
 
 <!-- GRAFIK TREND HISTORIS -->
+<!-- GRAFIK TREND HISTORIS -->
 <div class="history-trend-card">
 
     <div class="history-trend-header">
@@ -165,12 +167,52 @@ Reset
             </h2>
 
             <p>
-                Perubahan seluruh parameter monitoring berdasarkan waktu.
+                Perubahan parameter monitoring berdasarkan waktu.
             </p>
+        </div>
+
+        <!-- PILIH PARAMETER -->
+        <div class="history-parameter-select">
+
+            <label for="parameterSelect">
+                Parameter
+            </label>
+
+            <select id="parameterSelect">
+                <option value="temperature">
+                    Suhu (°C)
+                </option>
+
+                <option value="voltage">
+                    Tegangan (V)
+                </option>
+
+                <option value="current">
+                    Arus (mA)
+                </option>
+
+                <option value="power">
+                    Daya (mW)
+                </option>
+
+                <option value="wind">
+                    Kecepatan Angin (m/s)
+                </option>
+
+                <option value="rpm">
+                    RPM
+                </option>
+
+                <option value="battery">
+                    Baterai (%)
+                </option>
+            </select>
+
         </div>
 
     </div>
 
+    <!-- GRAFIK -->
     <div class="history-chart-container">
         <canvas id="historyChart"></canvas>
     </div>
@@ -238,6 +280,9 @@ Siap Digunakan
 
 <script type="module" src="js/historis.js"></script>
 
+<script type="module" src="js/auth-guard.js"></script>
+
+<script type="module" src="js/logout.js"></script>
 </body>
 
 </html>

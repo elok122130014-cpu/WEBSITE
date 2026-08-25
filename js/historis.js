@@ -42,6 +42,9 @@ const db = getDatabase(app);
 // ========================================
 // ELEMENT HTML
 // ========================================
+// ========================================
+// ELEMENT HTML
+// ========================================
 
 const tbody =
     document.getElementById("historyBody");
@@ -49,6 +52,20 @@ const tbody =
 const totalRecord =
     document.getElementById("totalRecord");
 
+const filterDate =
+    document.getElementById("filterDate");
+
+const searchInput =
+    document.getElementById("searchData");
+
+const btnExcel =
+    document.getElementById("btnExcel");
+
+const btnPDF =
+    document.getElementById("btnPDF");
+
+const btnReset =
+    document.getElementById("btnReset");
 
 // ========================================
 // DATA
@@ -543,6 +560,10 @@ setInterval(
 // GRAFIK HISTORIS
 // ========================================
 
+// ========================================
+// GRAFIK HISTORIS
+// ========================================
+
 function updateChart(data) {
 
     const ctx = document.getElementById("historyChart");
@@ -552,21 +573,112 @@ function updateChart(data) {
         return;
     }
 
-    // Data grafik dari waktu terlama ke terbaru
+    // Parameter yang sedang dipilih
+    const parameterSelect =
+        document.getElementById("parameterSelect");
+
+    const parameter =
+        parameterSelect ? parameterSelect.value : "temperature";
+
+    // Konfigurasi setiap parameter
+    const parameterConfig = {
+
+        rpm: {
+            label: "RPM",
+            unit: "RPM",
+            key: "rpm"
+        },
+
+        wind: {
+            label: "Kecepatan Angin",
+            unit: "m/s",
+            key: "wind"
+        },
+
+        temperature: {
+            label: "Suhu",
+            unit: "°C",
+            key: "temperature"
+        },
+
+        voltage: {
+            label: "Tegangan",
+            unit: "V",
+            key: "voltage"
+        },
+
+        current: {
+            label: "Arus",
+            unit: "mA",
+            key: "current"
+        },
+
+        power: {
+            label: "Daya",
+            unit: "mW",
+            key: "power"
+        },
+
+        battery: {
+            label: "Baterai",
+            unit: "%",
+            key: "battery"
+        }
+
+    };
+
+    const config =
+        parameterConfig[parameter] ||
+        parameterConfig.temperature;
+
+
+    // ========================================
+    // DATA GRAFIK
+    // ========================================
+
+    // Data grafik dibuat dari waktu terlama
+    // menuju waktu terbaru
     const dataGrafik = [...data].reverse();
 
+
+    // Label waktu
     const labels = dataGrafik.map(item => {
-        return `${item.tanggal} ${item.jam.replace(/-/g, ":")}`;
+
+        const jam = item.jam
+            ? item.jam.replace(/-/g, ":")
+            : "";
+
+        return `${item.tanggal || ""} ${jam}`;
+
     });
 
 
-    // Hapus grafik sebelumnya
+    // Nilai parameter yang dipilih
+    const values = dataGrafik.map(item => {
+
+        return Number(
+            item[config.key] ?? 0
+        );
+
+    });
+
+
+    // ========================================
+    // HAPUS GRAFIK LAMA
+    // ========================================
+
     if (historyChart) {
+
         historyChart.destroy();
+        historyChart = null;
+
     }
 
 
-    // Buat grafik baru
+    // ========================================
+    // BUAT GRAFIK BARU
+    // ========================================
+
     historyChart = new Chart(ctx, {
 
         type: "line",
@@ -578,107 +690,21 @@ function updateChart(data) {
             datasets: [
 
                 {
-                    label: "RPM",
+                    label:
+                        `${config.label} (${config.unit})`,
 
-                    data: dataGrafik.map(item =>
-                        Number(item.rpm ?? 0)
-                    ),
-
-                    borderWidth: 2,
-
-                    tension: 0.3,
-
-                    yAxisID: "yRPM"
-                },
-
-
-                {
-                    label: "Kecepatan Angin (m/s)",
-
-                    data: dataGrafik.map(item =>
-                        Number(item.wind ?? 0)
-                    ),
+                    data: values,
 
                     borderWidth: 2,
 
                     tension: 0.3,
 
-                    yAxisID: "yAngin"
-                },
+                    pointRadius: 2,
 
+                    pointHoverRadius: 5,
 
-                {
-                    label: "Suhu (°C)",
+                    fill: false
 
-                    data: dataGrafik.map(item =>
-                        Number(item.temperature ?? 0)
-                    ),
-
-                    borderWidth: 2,
-
-                    tension: 0.3,
-
-                    yAxisID: "ySuhu"
-                },
-
-
-                {
-                    label: "Tegangan (V)",
-
-                    data: dataGrafik.map(item =>
-                        Number(item.voltage ?? 0)
-                    ),
-
-                    borderWidth: 2,
-
-                    tension: 0.3,
-
-                    yAxisID: "yTegangan"
-                },
-
-
-                {
-                    label: "Arus (mA)",
-
-                    data: dataGrafik.map(item =>
-                        Number(item.current ?? 0)
-                    ),
-
-                    borderWidth: 2,
-
-                    tension: 0.3,
-
-                    yAxisID: "yArus"
-                },
-
-
-                {
-                    label: "Daya (mW)",
-
-                    data: dataGrafik.map(item =>
-                        Number(item.power ?? 0)
-                    ),
-
-                    borderWidth: 2,
-
-                    tension: 0.3,
-
-                    yAxisID: "yDaya"
-                },
-
-
-                {
-                    label: "Baterai (%)",
-
-                    data: dataGrafik.map(item =>
-                        Number(item.battery ?? 0)
-                    ),
-
-                    borderWidth: 2,
-
-                    tension: 0.3,
-
-                    yAxisID: "yBaterai"
                 }
 
             ]
@@ -694,20 +720,63 @@ function updateChart(data) {
 
 
             interaction: {
+
                 mode: "index",
+
                 intersect: false
+
             },
 
 
             plugins: {
 
                 legend: {
+
+                    display: true,
+
                     position: "top"
+
                 },
 
+
+                title: {
+
+                    display: true,
+
+                    text:
+                        `${config.label} terhadap Waktu`,
+
+                    font: {
+
+                        size: 16,
+
+                        weight: "bold"
+
+                    }
+
+                },
+
+
                 tooltip: {
+
                     mode: "index",
-                    intersect: false
+
+                    intersect: false,
+
+                    callbacks: {
+
+                        label: function(context) {
+
+                            return (
+                                `${config.label}: ` +
+                                `${context.parsed.y} ` +
+                                `${config.unit}`
+                            );
+
+                        }
+
+                    }
+
                 }
 
             },
@@ -718,97 +787,34 @@ function updateChart(data) {
                 x: {
 
                     title: {
+
                         display: true,
+
                         text: "Waktu"
+
                     },
 
                     ticks: {
+
                         maxTicksLimit: 12
+
                     }
 
                 },
 
 
-                yRPM: {
-
-                    type: "linear",
-
-                    position: "left",
+                y: {
 
                     title: {
+
                         display: true,
-                        text: "RPM"
-                    }
 
-                },
+                        text:
+                            `${config.label} (${config.unit})`
 
+                    },
 
-                yAngin: {
-
-                    type: "linear",
-
-                    display: false,
-
-                    position: "right"
-
-                },
-
-
-                ySuhu: {
-
-                    type: "linear",
-
-                    display: false,
-
-                    position: "right"
-
-                },
-
-
-                yTegangan: {
-
-                    type: "linear",
-
-                    display: false,
-
-                    position: "right"
-
-                },
-
-
-                yArus: {
-
-                    type: "linear",
-
-                    display: false,
-
-                    position: "right"
-
-                },
-
-
-                yDaya: {
-
-                    type: "linear",
-
-                    display: false,
-
-                    position: "right"
-
-                },
-
-
-                yBaterai: {
-
-                    type: "linear",
-
-                    display: false,
-
-                    position: "right",
-
-                    min: 0,
-
-                    max: 100
+                    beginAtZero: false
 
                 }
 
@@ -819,3 +825,334 @@ function updateChart(data) {
     });
 
 }
+// ========================================
+// GANTI PARAMETER GRAFIK
+// ========================================
+
+const parameterSelect =
+    document.getElementById("parameterSelect");
+
+if (parameterSelect) {
+
+    parameterSelect.addEventListener(
+        "change",
+        () => {
+
+            updateChart(dataFilter);
+
+        }
+    );
+
+}
+// ========================================
+// FILTER PENCARIAN
+// ========================================
+
+searchInput.addEventListener("input", () => {
+
+    const keyword =
+        searchInput.value.toLowerCase().trim();
+
+    dataFilter = semuaData.filter(item => {
+
+        return Object.values(item)
+            .join(" ")
+            .toLowerCase()
+            .includes(keyword);
+
+    });
+
+    tampilkanData(dataFilter);
+    updateChart(dataFilter);
+
+});
+
+
+// ========================================
+// FILTER TANGGAL
+// ========================================
+
+filterDate.addEventListener("change", () => {
+
+    const tanggal =
+        filterDate.value;
+
+    if (!tanggal) {
+
+        dataFilter = [...semuaData];
+
+    } else {
+
+        dataFilter =
+            semuaData.filter(
+                item => item.tanggal === tanggal
+            );
+
+    }
+
+    tampilkanData(dataFilter);
+    updateChart(dataFilter);
+
+});
+
+
+// ========================================
+// DOWNLOAD EXCEL
+// ========================================
+
+btnExcel.addEventListener("click", () => {
+
+    if (dataFilter.length === 0) {
+
+        alert("Tidak ada data untuk diunduh.");
+        return;
+
+    }
+
+    const excelData =
+        dataFilter.map(item => ({
+
+            "Tanggal":
+                item.tanggal ?? "-",
+
+            "Jam":
+                item.jam
+                    ? item.jam.replace(/-/g, ":")
+                    : "-",
+
+            "RPM":
+                item.rpm ?? "-",
+
+            "Kecepatan Angin (m/s)":
+                item.wind ?? "-",
+
+            "Suhu (°C)":
+                item.temperature ?? "-",
+
+            "Tegangan (V)":
+                item.voltage ?? "-",
+
+            "Arus (mA)":
+                item.current ?? "-",
+
+            "Daya (mW)":
+                item.power ?? "-",
+
+            "Baterai (%)":
+                item.battery ?? "-"
+
+        }));
+
+
+    const worksheet =
+        XLSX.utils.json_to_sheet(excelData);
+
+    const workbook =
+        XLSX.utils.book_new();
+
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Historis"
+    );
+
+
+    XLSX.writeFile(
+        workbook,
+        "Historis_VENTALUX.xlsx"
+    );
+
+});
+
+
+// ========================================
+// DOWNLOAD PDF
+// ========================================
+
+btnPDF.addEventListener("click", () => {
+
+    if (dataFilter.length === 0) {
+
+        alert("Tidak ada data untuk diunduh.");
+        return;
+
+    }
+
+
+    const { jsPDF } =
+        window.jspdf;
+
+
+    const doc =
+        new jsPDF("landscape");
+
+
+    doc.setFontSize(16);
+
+    doc.text(
+        "Historis Monitoring VENTALUX",
+        14,
+        15
+    );
+
+
+    const rows =
+        dataFilter.map(item => [
+
+            item.tanggal ?? "-",
+
+            item.jam
+                ? item.jam.replace(/-/g, ":")
+                : "-",
+
+            item.rpm ?? "-",
+
+            item.wind ?? "-",
+
+            item.temperature ?? "-",
+
+            item.voltage ?? "-",
+
+            item.current ?? "-",
+
+            item.power ?? "-",
+
+            item.battery ?? "-"
+
+        ]);
+
+
+    doc.autoTable({
+
+        head: [[
+            "Tanggal",
+            "Jam",
+            "RPM",
+            "Angin",
+            "Suhu",
+            "Volt",
+            "Arus",
+            "Daya",
+            "Baterai"
+        ]],
+
+        body: rows,
+
+        startY: 25,
+
+        theme: "grid",
+
+        styles: {
+
+            fontSize: 8
+
+        }
+
+    });
+
+
+    doc.save(
+        "Historis_VENTALUX.pdf"
+    );
+
+});
+// ========================================
+// RESET HISTORIS
+// ========================================
+
+btnReset.addEventListener("click", async () => {
+
+    const yakin = confirm(
+        "Apakah Anda yakin ingin menghapus seluruh data historis?\n\n" +
+        "Semua data dan grafik pada halaman Historis akan dihapus " +
+        "dan sistem akan mulai mengumpulkan data baru dari 0."
+    );
+
+    if (!yakin) {
+        return;
+    }
+
+    try {
+
+        // ========================================
+        // HAPUS DATA HISTORY DI FIREBASE
+        // ========================================
+
+        await remove(
+            ref(db, "history")
+        );
+
+
+        // ========================================
+        // KOSONGKAN DATA DI MEMORI WEBSITE
+        // ========================================
+
+        semuaData = [];
+        dataFilter = [];
+
+
+        // ========================================
+        // HAPUS GRAFIK
+        // ========================================
+
+        if (historyChart) {
+
+            historyChart.destroy();
+
+            historyChart = null;
+
+        }
+
+
+        // ========================================
+        // KOSONGKAN FILTER
+        // ========================================
+
+        filterDate.value = "";
+        searchInput.value = "";
+
+
+        // ========================================
+        // KEMBALIKAN PARAMETER DEFAULT
+        // ========================================
+
+        if (parameterSelect) {
+
+            parameterSelect.value =
+                "temperature";
+
+        }
+
+
+        // ========================================
+        // KOSONGKAN TABEL
+        // ========================================
+
+        tampilkanData([]);
+
+
+        // ========================================
+        // PESAN BERHASIL
+        // ========================================
+
+        alert(
+            "Data historis berhasil dihapus.\n\n" +
+            "Sistem siap mengumpulkan data baru dari 0."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Gagal menghapus data historis:",
+            error
+        );
+
+        alert(
+            "Gagal menghapus data historis."
+        );
+
+    }
+
+});

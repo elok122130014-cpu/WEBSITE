@@ -45,89 +45,205 @@ onValue(sensorRef, (snapshot) => {
     const data = snapshot.val();
 
     if (!data) return;
-    
-   lastUpdate = Number(data.lastUpdate || 0);
+
+    lastUpdate = Number(data.lastUpdate || 0);
+
+
+    // ==============================
+    // TURBIN
+    // ==============================
 
     const rpm = document.getElementById("rpm");
-if (rpm) {
-    rpm.textContent = data.rpm + " RPM";
-}
+
+    if (rpm) {
+        rpm.textContent =
+            (data.rpm ?? 0) + " RPM";
+    }
+
 
     const wind = document.getElementById("wind");
-if (wind) {
-    wind.textContent = data.wind + " m/s";
-}
 
-    const power = document.getElementById("power");
-if (power) {
-    power.textContent = data.power + " mW";
-}
+    if (wind) {
+        wind.textContent =
+            (data.wind ?? 0) + " m/s";
+    }
 
-const battery = document.getElementById("battery");
-const batteryFill = document.getElementById("batteryFill");
-const batteryStatus = document.getElementById("batteryStatus");
 
-if (battery) {
-    battery.textContent = data.battery + " %";
-}
+    const temperature =
+        document.getElementById("temperature");
 
-if (batteryFill) {
-    batteryFill.style.width = data.battery + "%";
-}
+    if (temperature) {
 
-if (batteryStatus) {
-    batteryStatus.textContent = data.batteryStatus;
-}
+        const nilaiSuhu =
+            Number(data.temperature ?? 0);
 
-// Warna sesuai kondisi baterai
-switch(data.batteryStatus){
+        temperature.textContent =
+            nilaiSuhu.toFixed(1) + " °C";
+    }
 
-    case "Penuh":
-        batteryFill.style.background = "#22c55e";
-        batteryStatus.style.color = "#22c55e";
-        break;
-
-    case "Normal":
-        batteryFill.style.background = "#3b82f6";
-        batteryStatus.style.color = "#3b82f6";
-        break;
-
-    case "Rendah":
-        batteryFill.style.background = "#f59e0b";
-        batteryStatus.style.color = "#f59e0b";
-        break;
-
-    case "Perlu Pengisian":
-        batteryFill.style.background = "#ef4444";
-        batteryStatus.style.color = "#ef4444";
-        break;
-}
-const temperature = document.getElementById("temperature");
-if (temperature) {
-    temperature.textContent = data.temperature.toFixed(1) + " °C";
-}
+// ==============================
+// BATERAI
+// ==============================
 
 const voltage = document.getElementById("voltage");
-if (voltage) {
-    voltage.textContent = data.voltage.toFixed(2) + " V";
-}
-
 const current = document.getElementById("current");
+const power = document.getElementById("power");
+
+if (voltage) {
+    const nilaiVoltage = Number(data.voltage_bat ?? 0);
+    voltage.textContent = nilaiVoltage.toFixed(2) + " V";
+}
+
 if (current) {
-    current.textContent = data.current.toFixed(0) + " mA";
+    const nilaiCurrent = Number(data.current_bat ?? 0);
+    current.textContent = nilaiCurrent.toFixed(0) + " mA";
 }
-if(window.addDataFirebase){
 
-    window.addDataFirebase(data);
-
-}
-if(window.updateMonitoring){
-
-    window.updateMonitoring(data);
-
+if (power) {
+    const nilaiPower = Number(data.power_bat ?? 0);
+    power.textContent = nilaiPower.toFixed(0) + " mW";
 }
 
 
+// ==============================
+// GENERATOR
+// ==============================
+
+const generatorVoltage =
+    document.getElementById("generatorVoltage");
+
+const generatorCurrent =
+    document.getElementById("generatorCurrent");
+
+const generatorPower =
+    document.getElementById("generatorPower");
+
+if (generatorVoltage) {
+    const nilaiGeneratorVoltage =
+        Number(data.voltage_gen ?? 0);
+
+    generatorVoltage.textContent =
+        nilaiGeneratorVoltage.toFixed(2) + " V";
+}
+
+if (generatorCurrent) {
+    const nilaiGeneratorCurrent =
+        Number(data.current_gen ?? 0);
+
+    generatorCurrent.textContent =
+        nilaiGeneratorCurrent.toFixed(0) + " mA";
+}
+
+if (generatorPower) {
+    const nilaiGeneratorPower =
+        Number(data.power_gen ?? 0);
+
+    generatorPower.textContent =
+        nilaiGeneratorPower.toFixed(0) + " mW";
+}
+    // ==============================
+    // STATUS BATERAI
+    // ==============================
+
+    const battery =
+        document.getElementById("battery");
+
+    const batteryFill =
+        document.getElementById("batteryFill");
+
+    const batteryStatus =
+        document.getElementById("batteryStatus");
+
+
+    if (battery) {
+
+        battery.textContent =
+            (data.battery ?? 0) + " %";
+    }
+
+
+    if (batteryFill) {
+
+        batteryFill.style.width =
+            (data.battery ?? 0) + "%";
+    }
+
+
+    if (batteryStatus) {
+
+        batteryStatus.textContent =
+            data.batteryStatus ?? "--";
+    }
+
+
+    // ==============================
+    // WARNA STATUS BATERAI
+    // ==============================
+
+    if (batteryFill && batteryStatus) {
+
+        switch (data.batteryStatus) {
+
+            case "Penuh":
+
+                batteryFill.style.background =
+                    "#22c55e";
+
+                batteryStatus.style.color =
+                    "#22c55e";
+
+                break;
+
+
+            case "Normal":
+
+                batteryFill.style.background =
+                    "#3b82f6";
+
+                batteryStatus.style.color =
+                    "#3b82f6";
+
+                break;
+
+
+            case "Rendah":
+
+                batteryFill.style.background =
+                    "#f59e0b";
+
+                batteryStatus.style.color =
+                    "#f59e0b";
+
+                break;
+
+
+            case "Perlu Pengisian":
+
+                batteryFill.style.background =
+                    "#ef4444";
+
+                batteryStatus.style.color =
+                    "#ef4444";
+
+                break;
+        }
+    }
+
+
+    // ==============================
+    // KIRIM DATA KE GRAFIK
+    // ==============================
+
+    if (window.addDataFirebase) {
+
+        window.addDataFirebase(data);
+    }
+
+
+    if (window.updateMonitoring) {
+
+        window.updateMonitoring(data);
+    }
 });
 
 export { db };

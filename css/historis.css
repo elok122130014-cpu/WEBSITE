@@ -108,3 +108,15 @@
     }
 
 }
+/* ========================================
+   TABEL HISTORIS
+======================================== */
+
+.history-table {
+    min-width: 1200px;
+}
+
+/* Agar tabel dapat digeser secara horizontal */
+.chart-section {
+    overflow-x: auto;
+}

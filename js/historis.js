@@ -207,30 +207,39 @@ async function arsipKeMemoriHistoris() {
                     `history/${item.tanggal}/${item.jam}`
                 ),
                 {
-                    rpm:
-                        item.rpm ?? 0,
+    rpm:
+        item.rpm ?? 0,
 
-                    wind:
-                        item.wind ?? 0,
+    wind:
+        item.wind ?? 0,
 
-                    temperature:
-                        item.temperature ?? 0,
+    temperature:
+        item.temperature ?? 0,
 
-                    voltage:
-                        item.voltage ?? 0,
+    voltage_bat:
+        item.voltage_bat ?? 0,
 
-                    current:
-                        item.current ?? 0,
+    current_bat:
+        item.current_bat ?? 0,
 
-                    power:
-                        item.power ?? 0,
+    power_bat:
+        item.power_bat ?? 0,
 
-                    battery:
-                        item.battery ?? 0,
+    voltage_gen:
+        item.voltage_gen ?? 0,
 
-                    batteryStatus:
-                        item.batteryStatus ?? ""
-                }
+    current_gen:
+        item.current_gen ?? 0,
+
+    power_gen:
+        item.power_gen ?? 0,
+
+    battery:
+        item.battery ?? 0,
+
+    batteryStatus:
+        item.batteryStatus ?? ""
+}
             );
 
         }
@@ -284,7 +293,7 @@ async function loadHistory() {
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="10">
+                    <td colspan="13">
                         Tidak ada data.
                     </td>
                 </tr>
@@ -373,7 +382,7 @@ async function loadHistory() {
 // CEK BATAS 720 DATA
 // ========================================
 
-if (semuaData.length >= MAX_HISTORY) {
+if (semuaData.length > MAX_HISTORY) {
 
     console.log(
         "Data sudah mencapai 720 record."
@@ -424,7 +433,7 @@ console.log(
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="10">
+                <td colspan="13">
                     Gagal membaca data historis.
                 </td>
             </tr>
@@ -448,7 +457,7 @@ function tampilkanData(data) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="10">
+                <td colspan="13">
                     Tidak ada data.
                 </td>
             </tr>
@@ -499,34 +508,57 @@ function tampilkanData(data) {
                         : "-"
                     } °C
                 </td>
+<td>
+    ${
+        item.voltage_gen != null
+        ? Number(item.voltage_gen).toFixed(2)
+        : "-"
+    } V
+</td>
 
-                <td>
-                    ${
-                        item.voltage != null
-                        ? Number(item.voltage).toFixed(2)
-                        : "-"
-                    } V
-                </td>
+<td>
+    ${
+        item.current_gen != null
+        ? Number(item.current_gen).toFixed(0)
+        : "-"
+    } mA
+</td>
 
-                <td>
-                    ${
-                        item.current != null
-                        ? Number(item.current).toFixed(0)
-                        : "-"
-                    } mA
-                </td>
+<td>
+    ${
+        item.power_gen != null
+        ? Number(item.power_gen).toFixed(0)
+        : "-"
+    } mW
+</td>
 
-                <td>
-                    ${
-                        item.power != null
-                        ? Number(item.power).toFixed(0)
-                        : "-"
-                    } mW
-                </td>
+<td>
+    ${
+        item.voltage_bat != null
+        ? Number(item.voltage_bat).toFixed(2)
+        : "-"
+    } V
+</td>
 
-                <td>
-                    ${item.battery ?? "-"}%
-                </td>
+<td>
+    ${
+        item.current_bat != null
+        ? Number(item.current_bat).toFixed(0)
+        : "-"
+    } mA
+</td>
+
+<td>
+    ${
+        item.power_bat != null
+        ? Number(item.power_bat).toFixed(0)
+        : "-"
+    } mW
+</td>
+
+<td>
+    ${item.battery ?? "-"}%
+</td>
 
             </tr>
 
@@ -601,23 +633,53 @@ function updateChart(data) {
             key: "temperature"
         },
 
+               // =========================
+        // BATERAI
+        // =========================
+
         voltage: {
-            label: "Tegangan",
+            label: "Tegangan Baterai",
             unit: "V",
-            key: "voltage"
+            key: "voltage_bat"
         },
 
         current: {
-            label: "Arus",
+            label: "Arus Baterai",
             unit: "mA",
-            key: "current"
+            key: "current_bat"
         },
 
         power: {
-            label: "Daya",
+            label: "Daya Baterai",
             unit: "mW",
-            key: "power"
+            key: "power_bat"
         },
+
+        // =========================
+        // GENERATOR
+        // =========================
+
+        generatorVoltage: {
+            label: "Tegangan Generator",
+            unit: "V",
+            key: "voltage_gen"
+        },
+
+        generatorCurrent: {
+            label: "Arus Generator",
+            unit: "mA",
+            key: "current_gen"
+        },
+
+        generatorPower: {
+            label: "Daya Generator",
+            unit: "mW",
+            key: "power_gen"
+        },
+
+        // =========================
+        // STATUS BATERAI
+        // =========================
 
         battery: {
             label: "Baterai",
@@ -909,40 +971,50 @@ btnExcel.addEventListener("click", () => {
 
     }
 
-    const excelData =
-        dataFilter.map(item => ({
+   const excelData =
+    dataFilter.map(item => ({
 
-            "Tanggal":
-                item.tanggal ?? "-",
+        "Tanggal":
+            item.tanggal ?? "-",
 
-            "Jam":
-                item.jam
-                    ? item.jam.replace(/-/g, ":")
-                    : "-",
+        "Jam":
+            item.jam
+                ? item.jam.replace(/-/g, ":")
+                : "-",
 
-            "RPM":
-                item.rpm ?? "-",
+        "RPM":
+            item.rpm ?? "-",
 
-            "Kecepatan Angin (m/s)":
-                item.wind ?? "-",
+        "Kecepatan Angin (m/s)":
+            item.wind ?? "-",
 
-            "Suhu (°C)":
-                item.temperature ?? "-",
+        "Suhu (°C)":
+            item.temperature ?? "-",
 
-            "Tegangan (V)":
-                item.voltage ?? "-",
+        // GENERATOR
+        "Tegangan Generator (V)":
+            item.voltage_gen ?? "-",
 
-            "Arus (mA)":
-                item.current ?? "-",
+        "Arus Generator (mA)":
+            item.current_gen ?? "-",
 
-            "Daya (mW)":
-                item.power ?? "-",
+        "Daya Generator (mW)":
+            item.power_gen ?? "-",
 
-            "Baterai (%)":
-                item.battery ?? "-"
+        // BATERAI
+        "Tegangan Baterai (V)":
+            item.voltage_bat ?? "-",
 
-        }));
+        "Arus Baterai (mA)":
+            item.current_bat ?? "-",
 
+        "Daya Baterai (mW)":
+            item.power_bat ?? "-",
+
+        "Baterai (%)":
+            item.battery ?? "-"
+
+    }));
 
     const worksheet =
         XLSX.utils.json_to_sheet(excelData);
@@ -998,45 +1070,55 @@ btnPDF.addEventListener("click", () => {
 
 
     const rows =
-        dataFilter.map(item => [
+    dataFilter.map(item => [
 
-            item.tanggal ?? "-",
+        item.tanggal ?? "-",
 
-            item.jam
-                ? item.jam.replace(/-/g, ":")
-                : "-",
+        item.jam
+            ? item.jam.replace(/-/g, ":")
+            : "-",
 
-            item.rpm ?? "-",
+        item.rpm ?? "-",
 
-            item.wind ?? "-",
+        item.wind ?? "-",
 
-            item.temperature ?? "-",
+        item.temperature ?? "-",
 
-            item.voltage ?? "-",
+        // GENERATOR
+        item.voltage_gen ?? "-",
 
-            item.current ?? "-",
+        item.current_gen ?? "-",
 
-            item.power ?? "-",
+        item.power_gen ?? "-",
 
-            item.battery ?? "-"
+        // BATERAI
+        item.voltage_bat ?? "-",
 
-        ]);
+        item.current_bat ?? "-",
+
+        item.power_bat ?? "-",
+
+        item.battery ?? "-"
+
+    ]);
 
 
     doc.autoTable({
 
-        head: [[
-            "Tanggal",
-            "Jam",
-            "RPM",
-            "Angin",
-            "Suhu",
-            "Volt",
-            "Arus",
-            "Daya",
-            "Baterai"
-        ]],
-
+       head: [[
+    "Tanggal",
+    "Jam",
+    "RPM",
+    "Angin",
+    "Suhu",
+    "Volt Gen",
+    "Arus Gen",
+    "Daya Gen",
+    "Volt Bat",
+    "Arus Bat",
+    "Daya Bat",
+    "Baterai"
+]],
         body: rows,
 
         startY: 25,

@@ -328,36 +328,50 @@
 
     <select id="memoryParameterSelect">
 
-        <option value="temperature">
-            Suhu (°C)
-        </option>
+    <!-- TURBIN -->
+    <option value="rpm">
+        RPM Turbin
+    </option>
 
-        <option value="voltage">
-            Tegangan (V)
-        </option>
+    <option value="wind">
+        Kecepatan Angin (m/s)
+    </option>
 
-        <option value="current">
-            Arus (mA)
-        </option>
+    <option value="temperature">
+        Suhu (°C)
+    </option>
 
-        <option value="power">
-            Daya (mW)
-        </option>
+    <!-- GENERATOR -->
+    <option value="generatorVoltage">
+        Tegangan Generator (V)
+    </option>
 
-        <option value="wind">
-            Kecepatan Angin (m/s)
-        </option>
+    <option value="generatorCurrent">
+        Arus Generator (mA)
+    </option>
 
-        <option value="rpm">
-            RPM
-        </option>
+    <option value="generatorPower">
+        Daya Generator (mW)
+    </option>
 
-        <option value="battery">
-            Baterai (%)
-        </option>
+    <!-- BATERAI -->
+    <option value="voltage">
+        Tegangan Baterai (V)
+    </option>
 
-    </select>
+    <option value="current">
+        Arus Baterai (mA)
+    </option>
 
+    <option value="power">
+        Daya Baterai (mW)
+    </option>
+
+    <option value="battery">
+        Baterai (%)
+    </option>
+
+</select>
 </div>
 
 <div class="memory-chart-container">
@@ -369,22 +383,27 @@
 
                 <table class="history-table">
 
-                    <thead>
+                   <thead>
+    <tr>
+        <th>No</th>
+        <th>Tanggal</th>
+        <th>Jam</th>
+        <th>RPM</th>
+        <th>Angin</th>
+        <th>Suhu</th>
 
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Jam</th>
-                            <th>RPM</th>
-                            <th>Angin</th>
-                            <th>Suhu</th>
-                            <th>Tegangan</th>
-                            <th>Arus</th>
-                            <th>Daya</th>
-                            <th>Baterai</th>
-                        </tr>
+        <!-- GENERATOR -->
+        <th>Tegangan Generator</th>
+        <th>Arus Generator</th>
+        <th>Daya Generator</th>
 
-                    </thead>
+        <!-- BATERAI -->
+        <th>Tegangan Baterai</th>
+        <th>Arus Baterai</th>
+        <th>Daya Baterai</th>
+        <th>Baterai</th>
+    </tr>
+</thead>
 
                     <tbody id="memoryTableBody">
 

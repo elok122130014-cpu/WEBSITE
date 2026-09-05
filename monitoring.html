@@ -100,99 +100,134 @@
 
         <!-- CARD SENSOR -->
 
-        <div class="summary">
+        <!-- ================= CARD SENSOR ================= -->
 
-            <div class="card">
+<div class="summary">
 
-                <i class="fa-solid fa-rotate"></i>
+    <!-- ================= PERFORMA TURBIN ================= -->
 
-                <h4>RPM Turbin</h4>
+    <div class="card">
+        <i class="fa-solid fa-rotate"></i>
 
-                <h2 id="rpm">980 RPM</h2>
+        <h4>RPM Turbin</h4>
 
-                <span>Realtime</span>
+        <h2 id="rpm">-- RPM</h2>
 
-            </div>
+        <span>Realtime</span>
+    </div>
 
-            <div class="card">
 
-                <i class="fa-solid fa-wind"></i>
+    <div class="card">
+        <i class="fa-solid fa-wind"></i>
 
-                <h4>Kecepatan Angin</h4>
+        <h4>Kecepatan Angin</h4>
 
-                <h2 id="wind">6.8 m/s</h2>
+        <h2 id="wind">-- m/s</h2>
 
-                <span>Realtime</span>
+        <span>Realtime</span>
+    </div>
 
-            </div>
 
-            <div class="card">
+    <div class="card">
+        <i class="fa-solid fa-temperature-half"></i>
 
-                <i class="fa-solid fa-temperature-half"></i>
+        <h4>Suhu</h4>
 
-                <h4>Suhu</h4>
+        <h2 id="temperature">-- °C</h2>
 
-                <h2 id="temperature">28 °C</h2>
+        <span>Realtime</span>
+    </div>
 
-                <span>Realtime</span>
 
-            </div>
+    <!-- ================= OUTPUT GENERATOR ================= -->
 
-            <div class="card battery-card">
+    <div class="card">
+        <i class="fa-solid fa-bolt"></i>
 
-                <i class="fa-solid fa-battery-three-quarters"></i>
+        <h4>Tegangan Generator</h4>
 
-                <h4>Status Baterai</h4>
+        <h2 id="generatorVoltage">-- V</h2>
 
-                <h2 id="battery">87 %</h2>
+        <span>Realtime</span>
+    </div>
 
-                <div class="battery-bar">
 
-                    <div id="batteryFill"></div>
+    <div class="card">
+        <i class="fa-solid fa-plug"></i>
 
-                </div>
+        <h4>Arus Generator</h4>
 
-                <p id="batteryStatus">Charging</p>
+        <h2 id="generatorCurrent">-- mA</h2>
 
-            </div>
+        <span>Realtime</span>
+    </div>
 
-            <div class="card">
 
-                <i class="fa-solid fa-bolt"></i>
+    <div class="card">
+        <i class="fa-solid fa-bolt-lightning"></i>
 
-                <h4>Daya</h4>
+        <h4>Daya Generator</h4>
 
-                <h2 id="power">36 W</h2>
+        <h2 id="generatorPower">-- mW</h2>
 
-                <span>Realtime</span>
+        <span>Realtime</span>
+    </div>
 
-            </div>
 
-            <div class="card">
+    <!-- ================= BATERAI ================= -->
 
-                <i class="fa-solid fa-bolt-lightning"></i>
+    <div class="card">
+        <i class="fa-solid fa-bolt-lightning"></i>
 
-                <h4>Tegangan</h4>
+        <h4>Tegangan Baterai</h4>
 
-                <h2 id="voltage">12.4 V</h2>
+        <h2 id="voltage">-- V</h2>
 
-                <span>Realtime</span>
+        <span>Realtime</span>
+    </div>
 
-            </div>
 
-            <div class="card">
+    <div class="card">
+        <i class="fa-solid fa-plug"></i>
 
-                <i class="fa-solid fa-plug"></i>
+        <h4>Arus Baterai</h4>
 
-                <h4>Arus</h4>
+        <h2 id="current">-- mA</h2>
 
-                <h2 id="current">2.9 A</h2>
+        <span>Realtime</span>
+    </div>
 
-                <span>Realtime</span>
 
-            </div>
+    <div class="card">
+        <i class="fa-solid fa-bolt"></i>
 
+        <h4>Daya Baterai</h4>
+
+        <h2 id="power">-- mW</h2>
+
+        <span>Realtime</span>
+    </div>
+
+
+    <!-- ================= STATUS BATERAI ================= -->
+
+    <div class="card battery-card">
+
+        <i class="fa-solid fa-battery-three-quarters"></i>
+
+        <h4>Status Baterai</h4>
+
+        <h2 id="battery">-- %</h2>
+
+        <div class="battery-bar">
+            <div id="batteryFill"></div>
         </div>
+
+        <p id="batteryStatus">--</p>
+
+    </div>
+
+</div>
                 <!-- ================= GRAFIK ================= -->
 
         <div class="chart-section">
@@ -203,21 +238,23 @@
 
                 <select id="chartSelect">
 
-                    <option value="rpm">RPM Turbin</option>
+            <!-- PARAMETER TURBIN -->
+                <option value="rpm">RPM Turbin</option>
+                <option value="wind">Kecepatan Angin</option>
+                <option value="temperature">Suhu</option>
 
-                    <option value="wind">Kecepatan Angin</option>
+             <!-- PARAMETER GENERATOR -->
+                <option value="generatorVoltage">Tegangan Generator</option>
+                <option value="generatorCurrent">Arus Generator</option>
+                <option value="generatorPower">Daya Generator</option>
 
-                    <option value="temperature">Suhu</option>
+            <!-- PARAMETER BATERAI -->
+                <option value="voltage">Tegangan Baterai</option>
+                <option value="current">Arus Baterai</option>
+                <option value="power">Daya Baterai</option>
+                <option value="battery">Status Baterai</option>
 
-                    <option value="voltage">Tegangan</option>
-
-                    <option value="current">Arus</option>
-
-                    <option value="power">Daya Generator</option>
-
-                    <option value="battery">Baterai</option>
-
-                </select>
+            </select>
 
             </div>
 

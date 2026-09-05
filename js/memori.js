@@ -274,17 +274,24 @@ function tampilkanTabelMemori(data) {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${item.tanggal || "-"}</td>
-            <td>${item.jam ? item.jam.replace(/-/g, ":") : "-"}</td>
-            <td>${item.rpm ?? "-"}</td>
-            <td>${item.wind ?? "-"}</td>
-            <td>${item.temperature ?? "-"}</td>
-            <td>${item.voltage ?? "-"}</td>
-            <td>${item.current ?? "-"}</td>
-            <td>${item.power ?? "-"}</td>
-            <td>${item.battery ?? "-"}</td>
-        `;
+    <td>${index + 1}</td>
+    <td>${item.tanggal || "-"}</td>
+    <td>${item.jam ? item.jam.replace(/-/g, ":") : "-"}</td>
+    <td>${item.rpm ?? "-"}</td>
+    <td>${item.wind ?? "-"}</td>
+    <td>${item.temperature ?? "-"}</td>
+
+    <!-- GENERATOR -->
+    <td>${item.voltage_gen ?? "-"}</td>
+    <td>${item.current_gen ?? "-"}</td>
+    <td>${item.power_gen ?? "-"}</td>
+
+    <!-- BATERAI -->
+    <td>${item.voltage_bat ?? "-"}</td>
+    <td>${item.current_bat ?? "-"}</td>
+    <td>${item.power_bat ?? "-"}</td>
+    <td>${item.battery ?? "-"}</td>
+`;
 
         tbody.appendChild(row);
 
@@ -326,49 +333,81 @@ function tampilkanGrafikMemori(data) {
 
     const parameterConfig = {
 
-        rpm: {
-            label: "RPM",
-            unit: "RPM",
-            key: "rpm"
-        },
+    // =========================
+    // TURBIN
+    // =========================
 
-        wind: {
-            label: "Kecepatan Angin",
-            unit: "m/s",
-            key: "wind"
-        },
+    rpm: {
+        label: "RPM Turbin",
+        unit: "RPM",
+        key: "rpm"
+    },
 
-        temperature: {
-            label: "Suhu",
-            unit: "°C",
-            key: "temperature"
-        },
+    wind: {
+        label: "Kecepatan Angin",
+        unit: "m/s",
+        key: "wind"
+    },
 
-        voltage: {
-            label: "Tegangan",
-            unit: "V",
-            key: "voltage"
-        },
+    temperature: {
+        label: "Suhu",
+        unit: "°C",
+        key: "temperature"
+    },
 
-        current: {
-            label: "Arus",
-            unit: "mA",
-            key: "current"
-        },
 
-        power: {
-            label: "Daya",
-            unit: "mW",
-            key: "power"
-        },
+    // =========================
+    // GENERATOR
+    // =========================
 
-        battery: {
-            label: "Baterai",
-            unit: "%",
-            key: "battery"
-        }
+    generatorVoltage: {
+        label: "Tegangan Generator",
+        unit: "V",
+        key: "voltage_gen"
+    },
 
-    };
+    generatorCurrent: {
+        label: "Arus Generator",
+        unit: "mA",
+        key: "current_gen"
+    },
+
+    generatorPower: {
+        label: "Daya Generator",
+        unit: "mW",
+        key: "power_gen"
+    },
+
+
+    // =========================
+    // BATERAI
+    // =========================
+
+    voltage: {
+        label: "Tegangan Baterai",
+        unit: "V",
+        key: "voltage_bat"
+    },
+
+    current: {
+        label: "Arus Baterai",
+        unit: "mA",
+        key: "current_bat"
+    },
+
+    power: {
+        label: "Daya Baterai",
+        unit: "mW",
+        key: "power_bat"
+    },
+
+    battery: {
+        label: "Baterai",
+        unit: "%",
+        key: "battery"
+    }
+
+};
 
 
     const config =
@@ -680,25 +719,43 @@ async function downloadMemori(namaMemori, memori) {
                 key: "temperature",
                 width: 15
             },
+// GENERATOR
+{
+    header: "Tegangan Generator (V)",
+    key: "voltage_gen",
+    width: 22
+},
 
-            {
-                header: "Tegangan (V)",
-                key: "voltage",
-                width: 15
-            },
+{
+    header: "Arus Generator (mA)",
+    key: "current_gen",
+    width: 22
+},
 
-            {
-                header: "Arus (mA)",
-                key: "current",
-                width: 15
-            },
+{
+    header: "Daya Generator (mW)",
+    key: "power_gen",
+    width: 22
+},
 
-            {
-                header: "Daya (mW)",
-                key: "power",
-                width: 15
-            },
+// BATERAI
+{
+    header: "Tegangan Baterai (V)",
+    key: "voltage_bat",
+    width: 20
+},
 
+{
+    header: "Arus Baterai (mA)",
+    key: "current_bat",
+    width: 20
+},
+
+{
+    header: "Daya Baterai (mW)",
+    key: "power_bat",
+    width: 20
+},
             {
                 header: "Baterai (%)",
                 key: "battery",
@@ -710,40 +767,57 @@ async function downloadMemori(namaMemori, memori) {
 
         data.forEach((item, index) => {
 
-            sheetData.addRow({
+          sheetData.addRow({
 
-                no: index + 1,
+    no: index + 1,
 
-                tanggal:
-                    item.tanggal || "-",
+    tanggal:
+        item.tanggal || "-",
 
-                jam:
-                    item.jam
-                        ? item.jam.replace(/-/g, ":")
-                        : "-",
+    jam:
+        item.jam
+            ? item.jam.replace(/-/g, ":")
+            : "-",
 
-                rpm:
-                    item.rpm ?? "-",
+    rpm:
+        item.rpm ?? "-",
 
-                wind:
-                    item.wind ?? "-",
+    wind:
+        item.wind ?? "-",
 
-                temperature:
-                    item.temperature ?? "-",
+    temperature:
+        item.temperature ?? "-",
 
-                voltage:
-                    item.voltage ?? "-",
+    // =========================
+    // GENERATOR
+    // =========================
 
-                current:
-                    item.current ?? "-",
+    voltage_gen:
+        item.voltage_gen ?? "-",
 
-                power:
-                    item.power ?? "-",
+    current_gen:
+        item.current_gen ?? "-",
 
-                battery:
-                    item.battery ?? "-"
+    power_gen:
+        item.power_gen ?? "-",
 
-            });
+    // =========================
+    // BATERAI
+    // =========================
+
+    voltage_bat:
+        item.voltage_bat ?? "-",
+
+    current_bat:
+        item.current_bat ?? "-",
+
+    power_bat:
+        item.power_bat ?? "-",
+
+    battery:
+        item.battery ?? "-"
+
+});
 
         });
 
@@ -788,50 +862,21 @@ async function downloadMemori(namaMemori, memori) {
         // ========================================
 
         const parameterList = [
+    { key: "rpm", label: "RPM Turbin", unit: "RPM" },
+    { key: "wind", label: "Kecepatan Angin", unit: "m/s" },
+    { key: "temperature", label: "Suhu", unit: "°C" },
 
-            {
-                key: "rpm",
-                label: "RPM",
-                unit: "RPM"
-            },
+    // GENERATOR
+    { key: "voltage_gen", label: "Tegangan Generator", unit: "V" },
+    { key: "current_gen", label: "Arus Generator", unit: "mA" },
+    { key: "power_gen", label: "Daya Generator", unit: "mW" },
 
-            {
-                key: "wind",
-                label: "Kecepatan Angin",
-                unit: "m/s"
-            },
-
-            {
-                key: "temperature",
-                label: "Suhu",
-                unit: "°C"
-            },
-
-            {
-                key: "voltage",
-                label: "Tegangan",
-                unit: "V"
-            },
-
-            {
-                key: "current",
-                label: "Arus",
-                unit: "mA"
-            },
-
-            {
-                key: "power",
-                label: "Daya",
-                unit: "mW"
-            },
-
-            {
-                key: "battery",
-                label: "Baterai",
-                unit: "%"
-            }
-
-        ];
+    // BATERAI
+    { key: "voltage_bat", label: "Tegangan Baterai", unit: "V" },
+    { key: "current_bat", label: "Arus Baterai", unit: "mA" },
+    { key: "power_bat", label: "Daya Baterai", unit: "mW" },
+    { key: "battery", label: "Baterai", unit: "%" }
+];
 
 
         // ========================================
